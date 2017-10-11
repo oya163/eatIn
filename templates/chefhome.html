@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chef Home</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+</head>
+<body>
+{% include '/includes/_navbar.html' %}
+    <div class="container" style="margin-top:50px;">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3 text-center">
+                {% if session_user_name %}
+                    <p>Hello <b>{{ session_user_name }}</b></p>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% endif %}
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                First name: #First name
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Last name: #Last name
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Email: #Email address
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Phone number: #Phone number
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Address: #Address
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Address reachable: #All zip code that he can reach
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Specialities: #All the food ID under this chef
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Rating : #rating
+            </div>
+        </div>
+    </div>
+</body>
+</html>

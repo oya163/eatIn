@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Home</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+</head>
+<body style="background-image: url({{ url_for('static', filename='img/loginback.jpg') }});background-size:100% 100vh">
+{% include '/includes/_navbar.html' %}
+    <div class="container" style="margin-top:50px;">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3 text-center">
+                {% if session_user_name %}
+                    <p>Hello <b>{{ session_user_name }}</b></p>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% endif %}
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Food ID: #Food ID
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Food Name: #Food name
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Cuisine: #cuisine
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Food description: #food description
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Cooking Time: #cook time
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Food rating: #food rating
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Price: #food price
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                Chef ID: #chefs who can prepare this food
+            </div>
+        </div>
+    </div>
+</body>
+</html>

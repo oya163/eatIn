@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order History</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body style="background-image: url({{ url_for('static', filename='../static/img/orderhistory_1.jpg') }});background-size:100% 100vh">
+{% include '/includes/_navbar.html' %}
+    <div class="container" style="margin-top:50px;" align="center">
+        <div class="row">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Food Name</th>
+                    <th>Prepared By</th>
+                    <th>Ordered Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Chicken Biryani</td>
+                    <td>Gordon Ramsay</td>
+                    <td>10/08/2017</td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Dirty rice and Gumbo</td>
+                    <td>Thomas Keller</td>
+                    <td>10/07/2017</td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>Chicken Basquaise</td>
+                    <td>Pierre Gagnaire</td>
+                    <td>10/05/2107</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
