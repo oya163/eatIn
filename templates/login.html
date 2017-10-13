@@ -6,20 +6,17 @@
             <div class="col-md-5 col-md-offset-5 loginformback rounded loginformpadtop" style="height:20rem; padding-top: 2rem;">
                 <h3 class="text-primary">Please sign in</h3>
                 <form action="" method="POST" style="padding-top:2rem">
-                    {% if error %}
-                        <p class=error><strong>Error:</strong> {{ error }}
-                    {% endif %}
                     <div class="input-group">
                         <span class="input-group-addon" id="basic-addon3">Username</span>
-                        <input type="text" class="form-control" name="username" id="user" aria-describedby="basic-addon3">
+                        <input type="text" class="form-control" name="username" id="user" aria-describedby="basic-addon3" value={{ request.form.username }}>
                     </div>
                     <br>
                     <div class="input-group">
                         <span class="input-group-addon" id="basic-addon3">Password</span>
-                        <input type="password" class="form-control" id="pass" name="password" aria-describedby="basic-addon3">
+                        <input type="password" class="form-control" id="pass" name="password" aria-describedby="basic-addon3" value={{ request.form.password }}>
                     </div>
                     <br>
-                    <input type="Submit" value="Login" class="btn btn-info">
+                    <input type="Submit" value="Login" class="btn btn-primary">
                 </form>
                 <br>
                 Not a member? <a href="{{ url_for('signup') }}">Sign Up</a>

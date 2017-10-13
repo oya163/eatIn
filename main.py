@@ -1,17 +1,20 @@
 from flask import Flask, session, redirect, url_for, escape, request, render_template, flash, logging
+from functools import wraps
 from passlib.hash import sha256_crypt
 from flaskext.mysql import MySQL
+from pymysql.cursors import DictCursor
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 
 app = Flask(__name__)
-mysql = MySQL()
+mysql = MySQL(cursorclass=DictCursor)
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'aayesha163'
 app.config['MYSQL_DATABASE_DB'] = 'eatin'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-# app.config['MYSQL_CURSORCLASS'] = 'Dictcursor'
 mysql.init_app(app)
 
+
+# Index
 @app.route('/')
 def index():
     if 'username' in session:
@@ -20,33 +23,75 @@ def index():
     return redirect(url_for('login'))
 
 
+# Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
-    if 'username' in session:
-        return redirect(url_for('index'))
     if request.method == 'POST':
-        username_form  = request.form['username']
-        password_form  = request.form['password']
-        cur.execute("SELECT emailid FROM user WHERE emailid = %s;", [username_form]) # CHECKS IF USERNAME EXSIST
-        if cur.fetchone()[0]:
-            cur.execute("SELECT password FROM user WHERE emailid = %s;", [username_form]) # FETCH THE HASHED PASSWORD
-            for row in cur.fetchall():
-                password = password_form.encode('utf-8')
-                if password_form == row[0]:
-                    session['username'] = request.form['username']
-                    return redirect(url_for('index'))
-                else:
-                    error = "Invalid Credential"
+        # Get form fields
+        username = request.form['username']
+        password_candidate = request.form['password']
+
+        # database connect
+        conn = mysql.connect()
+
+        # Create cursor
+        cur = conn.cursor()
+
+        # Get user by username
+        result = cur.execute("SELECT * FROM user where emailid = %s", [username])
+
+        if result > 0:
+            # Get stored hash
+            data = cur.fetchone()
+            password = data['password']
+
+            # Compare passwords
+            if sha256_crypt.verify(password_candidate, password):
+                # Passed
+                session['logged_in'] = True
+                session['username'] = username
+
+                flash('You are now logged in', 'success')
+                return redirect(url_for('dashboard'))
+            else:
+                error = 'Invalid login'
+                return render_template('login.html', error=error)
         else:
-            error = "Invalid Credential"
-    return render_template('login.html', error=error)
+            error = 'Username not found'
+            return render_template('login.html', error=error)
+
+        # Close cursor
+        cur.close()
+
+    return render_template('login.html')
+
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
-    return redirect(url_for('index'))
+    session.clear()
+    flash('You are now logged out', 'success')
+    return redirect(url_for('login'))
 
+
+# Check if user logged in
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Unauthorized, Please login', 'danger')
+            return redirect(url_for('login'))
+    return wrap
+
+#Dashboard
+@app.route('/dashboard')
+@is_logged_in
+def dashboard():
+    return render_template('dashboard.html')
+
+
+# Sign Up Form Class
 class SignupForm(Form):
     first_name = StringField('First Name', [validators.Length(min=1, max=50)])
     last_name = StringField('Last Name', [validators.Length(min=1, max=50)])
@@ -62,18 +107,20 @@ class SignupForm(Form):
     city = StringField('City', [validators.Length(min=1, max=50)])
     state = StringField('State', [validators.Length(min=2, max=10)])
     zipcode = StringField('Zipcode', [validators.Length(min=4, max=10)])
-    country = StringField('Country', [validators.Length(min=4, max=50)])
+    country = StringField('Country', [validators.Length(min=2, max=50)])
     phone_number = StringField('Phone', [validators.Length(min=4, max=50)])
     preference = StringField('Preference', [validators.Length(min=4, max=50)])
 
+
+# SignUp
 @app.route('/signup', methods=['GET','POST'])
 def signup():
     form = SignupForm(request.form)
-    if (request.method == 'POST' and form.validate()):
+    if request.method == 'POST' and form.validate():
         first_name = form.first_name.data
         last_name = form.last_name.data
         email_id = form.email_id.data
-        password = sha256_crypt.encrypt(str(form.password))
+        password = sha256_crypt.encrypt(str(form.password.data))
         user_type = form.usertype.data
         apartment_no = form.apartment_no.data
         street = form.street.data
@@ -90,6 +137,7 @@ def signup():
         # Create cursor
         cur = conn.cursor()
 
+        app.logger.info('Signup reached', first_name)
         # Execute query
         cur.execute("INSERT INTO user(emailid, password, fname, lname, user_type) VALUES(%s, %s, %s, %s, %s)",
                     (email_id, password, first_name, last_name, user_type))
@@ -100,7 +148,7 @@ def signup():
 
         cur.close()
 
-        flash('You are now registered and login', 'success')
+        flash('You are now registered and can login', 'success')
 
         return redirect(url_for('login'))
     return render_template('signup.html', form=form)
