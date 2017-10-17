@@ -1,56 +1,9 @@
+{% extends 'layout.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Order Page</title>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+{% block body %}
+    {% from "includes/_formhelpers.html" import render_field %}
 
-</head>
-
-<body style="background-image: url({{ url_for('static', filename='../static/img/restaurant.jpg') }});background-size:100% 100vh">
-{% include './includes/_navbar.html' %}
-    <!-- Page Content -->
-    <div class="container">
-
-      <!-- Team Members Row -->
-      <div class="row">
-        <div class="col-lg-12">
-        </div>
-        <div class="col-lg-4 col-sm-6 text-center mb-4">
-          <img class="rounded-circle img-fluid d-block mx-auto" src="../static/img/pierre.jpg" alt="" height="200" width="200">
-          <h3>Pierre Gagnaire</h3>
-          <p>FRANCE</p>
-        </div>
-        <div class="col-lg-4 col-sm-6 text-center mb-4">
-          <img class="rounded-circle img-fluid d-block mx-auto" src="../static/img/gordon.jpg" alt="" height="200" width="200">
-          <h3>Gordon Ramsay</h3>
-          <p>AUSTRALIA</p>
-        </div>
-        <div class="col-lg-4 col-sm-6 text-center mb-4">
-          <img class="rounded-circle img-fluid d-block mx-auto" src="../static/img/thomas.jpg" alt="" height="200" width="200">
-          <h3>Thomas Keller</h3>
-          <p>USA</p>
-        </div>
-      </div>
+    <div class = "container" align="center">
 
     </div>
-    <!-- /.container -->
-
-    <!-- Footer -->
-    <footer class="py-5 bg-dark">
-      <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Eatin 2017</p>
-      </div>
-      <!-- /.container -->
-    </footer>
-
-    <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/popper/popper.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-
-  </body>
-</html>
+{% endblock %}

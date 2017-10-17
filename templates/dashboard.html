@@ -4,4 +4,21 @@
     <h1>Dashboard <small>Welcome {{ session.username }}</small></h1>
     <a class="btn btn-success" href="/add_article">Order Food</a>
     <hr>
+    <table class="table table-striped">
+        <tr>
+            <th>#</th>
+            <th>Food Name</th>
+            <th>Prepared By</th>
+            <th>Ordered Date</th>
+            <th>Status</th>
+        </tr>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.food_name }}</td>
+                <td>{{ order.chef_name }}</td>
+                <td>{{ order.requested_date }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}

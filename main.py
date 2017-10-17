@@ -3,7 +3,7 @@ from functools import wraps
 from passlib.hash import sha256_crypt
 from flaskext.mysql import MySQL
 from pymysql.cursors import DictCursor
-from wtforms import Form, StringField, TextAreaField, PasswordField, validators
+from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, validators
 from wtforms.fields.html5 import DateField
 
 app = Flask(__name__)
@@ -89,9 +89,35 @@ def is_logged_in(f):
 @app.route('/dashboard')
 @is_logged_in
 def dashboard():
+    # database connect
+    conn = mysql.connect()
+
+    # Create cursor
+    cur = conn.cursor()
+
+    #Get order history
+    result = cur.execute("SELECT * FROM ORDERHISTORY")
+
+    orders = cur.fetchall(result)
+
+    if orders > 0:
+        return render_template('dashboard_order.html', orders=orders)
+    else:
+        msg = "No order found!"
+        return  render_template('dashboard_order.html', msg=msg)
+
+    # Close connection
+    cur.close()
+
     return render_template('dashboard.html')
 
-
+'''
+    Need to work on 
+        if customer type == 'customer':
+            insert into customer table
+        elseif customer_type == 'chef':
+            insert into chef table 
+'''
 # Sign Up Form Class
 class SignupForm(Form):
     first_name = StringField('First Name', [validators.Length(min=1, max=50)])
@@ -102,7 +128,8 @@ class SignupForm(Form):
         validators.EqualTo('confirm', message='Passwords do not match')
     ])
     confirm = PasswordField('Confirm Password')
-    usertype = StringField('User Type', [validators.Length(min=4,max=10)])
+    # usertype = StringField('User Type', [validators.Length(min=4,max=10)])
+    usertype = SelectField('User Type', choices=[('cust','Customer'),('ch','Chef')])
     apartment_no = StringField('Apartment No', [validators.Length(min=1, max=50)])
     street = StringField('Street', [validators.Length(min=1, max=50)])
     city = StringField('City', [validators.Length(min=1, max=50)])
@@ -204,7 +231,12 @@ def dashboard_order():
         order_name = form.order_name.data
         requested_date = form.requested_date.data
         comments = form.comments.data
-        return render_template('dashboard_order.html')
+        '''
+        When order food is clicked
+        page containing chef list based on the location
+        should be displayed
+        '''
+        return redirect(url_for('cheflist'))
     return render_template('dashboard_order.html', form=form)
 
 @app.route('/cheflist', methods=['GET', 'POST'])
