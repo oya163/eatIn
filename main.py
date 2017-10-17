@@ -45,12 +45,14 @@ def login():
             # Get stored hash
             data = cur.fetchone()
             password = data['password']
+            first_name = data['fname']
 
             # Compare passwords
             if sha256_crypt.verify(password_candidate, password):
                 # Passed
                 session['logged_in'] = True
                 session['username'] = username
+                session['first_name'] = first_name
 
                 flash('You are now logged in', 'success')
                 return redirect(url_for('dashboard'))
@@ -63,7 +65,6 @@ def login():
 
         # Close cursor
         cur.close()
-
     return render_template('login.html')
 
 
@@ -90,34 +91,27 @@ def is_logged_in(f):
 @is_logged_in
 def dashboard():
     # database connect
-    conn = mysql.connect()
-
-    # Create cursor
-    cur = conn.cursor()
-
-    #Get order history
-    result = cur.execute("SELECT * FROM ORDERHISTORY")
-
-    orders = cur.fetchall(result)
-
-    if orders > 0:
-        return render_template('dashboard_order.html', orders=orders)
-    else:
-        msg = "No order found!"
-        return  render_template('dashboard_order.html', msg=msg)
-
-    # Close connection
-    cur.close()
+    # conn = mysql.connect()
+    #
+    # # Create cursor
+    # cur = conn.cursor()
+    #
+    # #Get order history
+    # result = cur.execute("SELECT * FROM ORDERHISTORY")
+    #
+    # orders = cur.fetchall(result)
+    #
+    # if orders > 0:
+    #     return render_template('dashboard_order.html', orders=orders)
+    # else:
+    #     msg = "No order found!"
+    #     return  render_template('dashboard_order.html', msg=msg)
+    #
+    # # Close connection
+    # cur.close()
 
     return render_template('dashboard.html')
 
-'''
-    Need to work on 
-        if customer type == 'customer':
-            insert into customer table
-        elseif customer_type == 'chef':
-            insert into chef table 
-'''
 # Sign Up Form Class
 class SignupForm(Form):
     first_name = StringField('First Name', [validators.Length(min=1, max=50)])
@@ -139,6 +133,13 @@ class SignupForm(Form):
     preference = StringField('Preference', [validators.Length(min=4, max=50)])
 
 
+'''
+    Need to work on 
+        if customer type == 'customer':
+            insert into customer table
+        elseif customer_type == 'chef':
+            insert into chef table 
+'''
 # SignUp
 @app.route('/signup', methods=['GET','POST'])
 def signup():
