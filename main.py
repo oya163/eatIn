@@ -4,6 +4,7 @@ from passlib.hash import sha256_crypt
 from flaskext.mysql import MySQL
 from pymysql.cursors import DictCursor
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
+from wtforms.fields.html5 import DateField
 
 app = Flask(__name__)
 mysql = MySQL(cursorclass=DictCursor)
@@ -187,6 +188,24 @@ def orderpage():
         return render_template('orderpage.html')
     return render_template('orderpage.html', form=form)
 
+
+# Sign Up Form Class
+class DashboardOrderForm(Form):
+    order_name = StringField('What\'s your order', [validators.Length(min=1, max=50)])
+    requested_date = DateField('Requested date', format='%m/%d/%Y')
+    comments = TextAreaField('Comments', [validators.Length(min=0)])
+
+
+@app.route('/dashboard_order', methods=['GET', 'POST'])
+@is_logged_in
+def dashboard_order():
+    form = DashboardOrderForm(request.form)
+    if request.method == 'POST' and form.validate():
+        order_name = form.order_name.data
+        requested_date = form.requested_date.data
+        comments = form.comments.data
+        return render_template('dashboard_order.html')
+    return render_template('dashboard_order.html', form=form)
 
 @app.route('/cheflist', methods=['GET', 'POST'])
 def cheflist():

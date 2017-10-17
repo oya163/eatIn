@@ -21,6 +21,13 @@ html, body {
     height: 100%;
 }
 
+.orderpage-bg {
+    background-image: url('/static/img/orderbackground.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size:100%;
+}
+
 .vcenter {
     display: inline-block;
     vertical-align: middle;
