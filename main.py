@@ -14,7 +14,6 @@ app.config['MYSQL_DATABASE_DB'] = 'eatin'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
 
-
 # Index
 @app.route('/')
 def index():
@@ -112,6 +111,12 @@ def dashboard():
 
     return render_template('dashboard.html')
 
+def get_chefspecial():
+    conn = mysql.connect()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM cuisine")
+    return cur.fetchall()
+
 # Sign Up Form Class
 class SignupForm(Form):
     first_name = StringField('First Name', [validators.Length(min=1, max=50)])
@@ -130,16 +135,10 @@ class SignupForm(Form):
     zipcode = StringField('Zipcode', [validators.Length(min=4, max=10)])
     country = StringField('Country', [validators.Length(min=2, max=50)])
     phone_number = StringField('Phone', [validators.Length(min=4, max=50)])
-    preference = StringField('Preference', [validators.Length(min=4, max=50)])
+    # preference = StringField('Preference', [validators.Length(min=4, max=50)])
+    cuisine = SelectField('Cuisine', choices=[(x['cuisineid'],x['cuisine_name']) for x in get_chefspecial()], coerce=int)
 
 
-'''
-    Need to work on 
-        if customer type == 'customer':
-            insert into customer table
-        elseif customer_type == 'chef':
-            insert into chef table 
-'''
 # SignUp
 @app.route('/signup', methods=['GET','POST'])
 def signup():
@@ -157,7 +156,9 @@ def signup():
         zipcode = form.zipcode.data
         country = form.country.data
         phone_number = form.phone_number.data
-        preference = form.preference.data
+        # preference = form.preference.data
+        cuisine = form.cuisine.data
+
 
         # database connect
         conn = mysql.connect()
@@ -165,12 +166,21 @@ def signup():
         # Create cursor
         cur = conn.cursor()
 
-        app.logger.info('Signup reached', first_name)
+        app.logger.info('cuisine', cuisine)
         # Execute query
-        cur.execute("INSERT INTO user(emailid, password, fname, lname, user_type) VALUES(%s, %s, %s, %s, %s)",
+        cur.execute("INSERT INTO user(emailid, password, fname, lname, user_type) \
+                    VALUES(%s, %s, %s, %s, %s)",
                     (email_id, password, first_name, last_name, user_type))
-        cur.execute("INSERT INTO customer (customerid, address,street,city,state,zipcode,country,phone_number,preference) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-                    (int(cur.lastrowid), apartment_no, street, city, state, int(zipcode), country, phone_number, preference))
+        if user_type == 'customer':
+            cur.execute("INSERT INTO customer (customerid,address,street,\
+                          city,state,zipcode,country,phone_number,preference) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                        (int(cur.lastrowid), apartment_no, street, city, \
+                         state, int(zipcode), country, phone_number, cuisine))
+        elif user_type == 'chef':
+            cur.execute("INSERT INTO chef (chefid,address,street,city,state,zipcode,country,phone_number,rating) \
+                         values(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                (int(cur.lastrowid), apartment_no, street, city, state, int(zipcode), country, phone_number,0))
+            cur.execute("INSERT INTO `chefspecial` (`chefid`, `cuisineid`) VALUES (%s,%s) ", (int(cur.lastrowid),[cuisine]))
 
         conn.commit()
 
