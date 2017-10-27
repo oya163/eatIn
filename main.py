@@ -25,6 +25,7 @@ def index():
 
 # Login
 @app.route('/login', methods=['GET', 'POST'])
+@app.route('/login/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         # Get form fields
@@ -68,6 +69,7 @@ def login():
 
 
 @app.route('/logout')
+@app.route('/logout/')
 def logout():
     session.clear()
     flash('You are now logged out', 'success')
@@ -87,6 +89,7 @@ def is_logged_in(f):
 
 #Dashboard
 @app.route('/dashboard')
+@app.route('/dashboard/')
 @is_logged_in
 def dashboard():
     # database connect
