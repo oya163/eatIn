@@ -1,2 +1,3 @@
 def_signup.txt
 .idea/*.*
+*.pyc
