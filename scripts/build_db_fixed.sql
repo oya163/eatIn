@@ -31,12 +31,14 @@ CREATE TABLE `chef` (
   `city` varchar(50) DEFAULT NULL,
   `state` varchar(50) DEFAULT NULL,
   `zipcode` int(11) DEFAULT NULL,
-  `country` varchar(50) DEFAULT NULL,
+  `countryid` int(11) DEFAULT NULL,
   `phone_number` int(11) DEFAULT NULL,
   `rating` float DEFAULT NULL,
   `userid` int(11) NOT NULL,
   PRIMARY KEY (`chefid`),
   KEY `fk_chef_userid_idx` (`userid`),
+  KEY `fk_chef_coutnryid_idx` (`countryid`),
+  CONSTRAINT `fk_chef_coutnryid` FOREIGN KEY (`countryid`) REFERENCES `country` (`countryid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_chef_userid` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -67,11 +69,27 @@ DROP TABLE IF EXISTS `chefspecial`;
 CREATE TABLE `chefspecial` (
   `chefid` int(11) NOT NULL,
   `cuisineid` int(11) NOT NULL,
+  PRIMARY KEY (`chefid`,`cuisineid`),
   KEY `fk_chefspecial_cuisineid_idx` (`cuisineid`),
   KEY `fk_chefspecial_chefid_idx` (`chefid`),
   CONSTRAINT `fk_chefspecial_chefid` FOREIGN KEY (`chefid`) REFERENCES `chef` (`chefid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_chefspecial_cuisineid` FOREIGN KEY (`cuisineid`) REFERENCES `cuisine` (`cuisineid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `country`
+--
+
+DROP TABLE IF EXISTS `country`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `country` (
+  `countryid` int(11) NOT NULL AUTO_INCREMENT,
+  `countryname` varchar(100) NOT NULL,
+  `abbr` varchar(3) DEFAULT NULL,
+  PRIMARY KEY (`countryid`)
+) ENGINE=InnoDB AUTO_INCREMENT=261 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,6 +116,7 @@ DROP TABLE IF EXISTS `cuisineitem`;
 CREATE TABLE `cuisineitem` (
   `foodid` int(11) NOT NULL,
   `cuisineid` int(11) NOT NULL,
+  PRIMARY KEY (`foodid`,`cuisineid`),
   KEY `fk_cuisineitem_foodid_idx` (`foodid`),
   KEY `fk_cuisineitem_cuisineid_idx` (`cuisineid`),
   CONSTRAINT `fk_cuisineitem_cuisineid` FOREIGN KEY (`cuisineid`) REFERENCES `cuisine` (`cuisineid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -119,12 +138,14 @@ CREATE TABLE `customer` (
   `city` varchar(50) DEFAULT NULL,
   `state` varchar(50) DEFAULT NULL,
   `zipcode` int(11) DEFAULT NULL,
-  `country` varchar(50) DEFAULT NULL,
+  `countryid` int(11) DEFAULT NULL,
   `phone_number` int(11) DEFAULT NULL,
   `preference` varchar(500) DEFAULT NULL,
   `userid` int(11) NOT NULL,
   PRIMARY KEY (`customerid`),
   KEY `fk_customer_userid_idx` (`userid`),
+  KEY `fk_customer_countryid_idx` (`countryid`),
+  CONSTRAINT `fk_customer_countryid` FOREIGN KEY (`countryid`) REFERENCES `country` (`countryid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_customer_userid` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -199,4 +220,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-10-28 21:20:03
+-- Dump completed on 2017-10-29 13:41:54
