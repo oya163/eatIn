@@ -17,8 +17,9 @@ class Chef(db.Model):
     country = db.Column(db.String(50))
     phone_number = db.Column(db.Integer)
     rating = db.Column(db.Float)
+    userid = db.Column(db.Integer, db.ForeignKey('user.userid'))
 
-    def __init__(self, address, street, city, state, zipcode, country, phone_number, rating):
+    def __init__(self, address, street, city, state, zipcode, country, phone_number, rating, userid):
         self.address = address
         self.street = street
         self.city = city
@@ -27,6 +28,7 @@ class Chef(db.Model):
         self.country = country
         self.phone_number = phone_number
         self.rating = rating
+        selt.userid = userid
 
     def __repr__(self):
         return '<ChefID %r>' % self.chefid
@@ -34,15 +36,17 @@ class Chef(db.Model):
 
 
 class ChefReachout(db.Model):
-    chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'))
+    chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'), primary_key=True)
     city = db.Column(db.String(50))
+    miles = db.Column(db.Integer)
 
     def __init__(self, chefid, city):
         self.chefid = chefid
         self.city = city
+        self.miles
 
     def __repr__(self):
-        return '<ChefID %r City %s>' % (self.chefid, city)
+        return '<ChefID %r City %s Miles %r>' % (self.chefid, self.city, self.miles)
 # END ChefReachout
 
 
@@ -81,8 +85,9 @@ class Customer(db.Model):
     country = db.Column(db.String(50))
     phone_number = db.Column(db.Integer)
     preference = db.Column(db.String(500))
+    userid = db.Column(db.Integer, db.ForeignKey('user.userid'))
 
-    def __init__(self, address, street, city, state, zipcode, country, phone_number. preference):
+    def __init__(self, address, street, city, state, zipcode, country, phone_number, preference, userid):
         self.address = address
         self.street = street
         self.city = city
@@ -91,6 +96,7 @@ class Customer(db.Model):
         self.country = country
         self.phone_number = phone_number
         self.preference = preference
+        self.userid = userid
 
     def __repr__(self):
         return '<CustomerID %r>' % self.cutomerid
