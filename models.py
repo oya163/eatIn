@@ -2,30 +2,32 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
-from eatIn import app
+from main import app
 
 db = SQLAlchemy(app)
 
 
 class Chef(db.Model):
+    __tablename__ = 'chef'
+
     chefid = db.Column(db.Integer, primary_key=True)
     address = db.Column(db.String(100))
     street = db.Column(db.String(100))
     city = db.Column(db.String(50))
     state = db.Column(db.String(50))
     zipcode = db.Column(db.Integer)
-    country = db.Column(db.String(50))
+    countryid = db.Column(db.Integer, db.ForeignKey('country.countryid'))
     phone_number = db.Column(db.Integer)
     rating = db.Column(db.Float)
     userid = db.Column(db.Integer, db.ForeignKey('user.userid'))
 
-    def __init__(self, address, street, city, state, zipcode, country, phone_number, rating, userid):
+    def __init__(self, address, street, city, state, zipcode, countryid, phone_number, rating, userid):
         self.address = address
         self.street = street
         self.city = city
         self.state = state
         self.zipcode = zipcode
-        self.country = country
+        self.countryid = countryid
         self.phone_number = phone_number
         self.rating = rating
         selt.userid = userid
@@ -36,6 +38,8 @@ class Chef(db.Model):
 
 
 class ChefReachout(db.Model):
+    __tablename__ = 'chefreachout'
+
     chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'), primary_key=True)
     city = db.Column(db.String(50))
     miles = db.Column(db.Integer)
@@ -51,8 +55,10 @@ class ChefReachout(db.Model):
 
 
 class ChefSpecial(db.Model):
-    chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'))
-    cuisineid = db.Column(db.Integer, db.ForeignKey('cuisine.cuisineid'))
+    __tablename__ = 'chefspecial'
+
+    chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'), primary_key=True)
+    cuisineid = db.Column(db.Integer, db.ForeignKey('cuisine.cuisineid'), primary_key=True)
 
     def __init__(self, chefid, cuisineid):
         self.chefid = chefid
@@ -63,7 +69,25 @@ class ChefSpecial(db.Model):
 # END ChefSpecial
 
 
+class Country(db.Model):
+    __tablename__ = 'country'
+
+    countryid = db.Column(db.Integer, primary_key=True)
+    countryname = db.Column(db.String(100))
+    abbr = db.Column(db.String(3))
+
+    def __init__(self, countryname, abbr):
+        self.countryname = countryname
+        self.abbr = abbr
+
+    def __repr__(self):
+        return '<CountryID %r>' % (self.countryid)
+# END Country
+
+
 class Cuisine(db.Model):
+    __tablename__ = 'cuisine'
+
     cuisineid = db.Column(db.Integer, primary_key=True)
     cuisine_name = db.Column(db.String(50))
 
@@ -76,24 +100,26 @@ class Cuisine(db.Model):
 
 
 class Customer(db.Model):
+    __tablename__ = 'customer'
+
     customerid = db.Column(db.Integer, primary_key=True)
     address = db.Column(db.String(100))
     street = db.Column(db.String(100))
     city = db.Column(db.String(50))
     state = db.Column(db.String(50))
     zipcode = db.Column(db.Integer)
-    country = db.Column(db.String(50))
+    countryid = db.Column(db.Integer, db.ForeignKey('country.countryid'))
     phone_number = db.Column(db.Integer)
     preference = db.Column(db.String(500))
     userid = db.Column(db.Integer, db.ForeignKey('user.userid'))
 
-    def __init__(self, address, street, city, state, zipcode, country, phone_number, preference, userid):
+    def __init__(self, address, street, city, state, zipcode, countryid, phone_number, preference, userid):
         self.address = address
         self.street = street
         self.city = city
         self.state = state
         self.zipcode = zipcode
-        self.country = country
+        self.countryid = countryid
         self.phone_number = phone_number
         self.preference = preference
         self.userid = userid
@@ -104,6 +130,8 @@ class Customer(db.Model):
 
 
 class FoodItem(db.Model):
+    __tablename__ = 'fooditem'
+
     foodid = db.Column(db.Integer, primary_key=True)
     foodname = db.Column(db.String(100))
     food_des = db.Column(db.String(500))
@@ -124,8 +152,10 @@ class FoodItem(db.Model):
 
 
 class CuisineItem(db.Model):
-    foodid = db.Column(db.Integer, db.ForeignKey('fooditem.foodid'))
-    cuisineid = db.Column(db.Integer, db.ForeignKey('cuisine.cuisineid'))
+    __tablename__ = 'cuisineitem'
+
+    foodid = db.Column(db.Integer, db.ForeignKey('fooditem.foodid'), primary_key=True)
+    cuisineid = db.Column(db.Integer, db.ForeignKey('cuisine.cuisineid'), primary_key=True)
 
     def __init__(self, foodid, cuisineid):
         self.chefid = foodid
@@ -137,6 +167,8 @@ class CuisineItem(db.Model):
 
 
 class User(db.Model):
+    __tablename__ = 'user'
+
     userid = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(50))
     password = db.Column(db.String(100))
@@ -158,6 +190,8 @@ class User(db.Model):
 
 
 class OrderFood(db.Model):
+    __tablename__ = 'orderfood'
+
     orderid = db.Column(db.Integer, primary_key=True)
     customerid = db.Column(db.Integer, db.ForeignKey('customer.customerid'))
     chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'))
@@ -177,5 +211,3 @@ class OrderFood(db.Model):
     def __repr__(self):
         return '<OrderID %r>' % self.orderid
 # END OrderFood
-
-

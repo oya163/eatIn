@@ -1,4 +1,9 @@
-from flask import Flask, session, redirect, url_for, escape, request, render_template, flash, logging
+import math
+import random
+import sys
+
+from flask import Flask, session, redirect, g, url_for, escape, request, render_template, flash, logging, abort
+
 from functools import wraps
 from passlib.hash import sha256_crypt
 from flaskext.mysql import MySQL
@@ -6,13 +11,16 @@ from pymysql.cursors import DictCursor
 from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, validators
 from wtforms.fields.html5 import DateField
 
+
+# app/db config stuff
 app = Flask(__name__)
-mysql = MySQL(cursorclass=DictCursor)
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'aayesha163'
-app.config['MYSQL_DATABASE_DB'] = 'eatin'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-mysql.init_app(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://<user>:<pass>@localhost/eatin'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+if sys.version_info.major < 3:
+    reload(sys)
+sys.setdefaultencoding('utf8')
+
 
 # Index
 @app.route('/')
@@ -114,11 +122,13 @@ def dashboard():
 
     return render_template('dashboard.html')
 
+"""
 def get_chefspecial():
     conn = mysql.connect()
     cur = conn.cursor()
     cur.execute("SELECT * FROM cuisine")
     return cur.fetchall()
+
 
 # Sign Up Form Class
 class SignupForm(Form):
@@ -193,7 +203,7 @@ def signup():
 
         return redirect(url_for('login'))
     return render_template('signup.html', form=form)
-
+"""
 
 @app.route('/fooditem')
 def fooditem():
