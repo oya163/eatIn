@@ -20,8 +20,9 @@ class Chef(db.Model):
     phone_number = db.Column(db.Integer)
     rating = db.Column(db.Float)
     userid = db.Column(db.Integer, db.ForeignKey('user.userid'))
+    chefdbid = db.Column(db.Integer)
 
-    def __init__(self, address, street, city, state, zipcode, countryid, phone_number, rating, userid):
+    def __init__(self, address, street, city, state, zipcode, countryid, phone_number, rating, userid, chefdbid):
         self.address = address
         self.street = street
         self.city = city
@@ -30,7 +31,7 @@ class Chef(db.Model):
         self.countryid = countryid
         self.phone_number = phone_number
         self.rating = rating
-        selt.userid = userid
+        self.userid = userid
 
     def __repr__(self):
         return '<ChefID %r>' % self.chefid
@@ -176,8 +177,7 @@ class User(db.Model):
     lname = db.Column(db.String(50))
     user_type = db.Column(db.String(20))
 
-    def __init__(self, userid, email, password, fname, lname, user_type):
-        self.userid = userid
+    def __init__(self, email, password, fname, lname, user_type):
         self.email = email
         self.password = password
         self.fname = fname

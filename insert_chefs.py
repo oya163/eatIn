@@ -16,21 +16,27 @@ def main():
            llist = line.split('|')
 
            if (llist >= 2):
-               fname = llist[0]
-               lname = llist[1]
-               chefdbid = llist[2]
+               fname = llist[0].strip()
+               lname = llist[1].strip()
+               chefdbid = int(llist[2])
            else:   
-               fname = llist[0]
+               fname = llist[0].strip()
                lname = ""
-               chefdbid  llist[1]
+               chefdbid = int(llist[1])
 
            print "inserting", line
+           email = lname + "_" + str(chefdbid) + "@gmail.com"
 
-           user = models.User( stuff );
+           user = models.User(email, "", fname, lname, "user")
+           models.db.session.add(user)
+           models.db.session.commit()
 
-           chef = models.Chef( ... );
+           # assign random country to each chef
+           countryid = random.randint(1, 260)
+           zipcode = random.randint(1, 99999)
 
-           models.db.session.add(country)
+           chef = models.Chef("", "", "", "", zipcode, countryid, 1234567890, 0.0, user.userid, chefdbid)
+           models.db.session.add(chef)
            models.db.session.commit()
 
            print "done"
