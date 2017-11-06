@@ -9,7 +9,7 @@ from collections import defaultdict
 import models
 
 def main():
-    randusers = random.sample(range(32747, 60001), 1000)
+    randusers = random.sample(range(65368, 98110), 1000)
 
     for randuser in randusers:
            print "inserting to customer", randuser

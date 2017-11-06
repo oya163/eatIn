@@ -32,6 +32,7 @@ class Chef(db.Model):
         self.phone_number = phone_number
         self.rating = rating
         self.userid = userid
+        self.chefdbid = chefdbid
 
     def __repr__(self):
         return '<ChefID %r>' % self.chefid
