@@ -10,3 +10,17 @@ testing
 if changes to the build_db_fixed.sql script were made, it means the schema was
 changed and you should delete the db and build a new one and populate
 everything again with the above steps.
+
+
+Data sources:
+chefs: https://www.chefdb.com/nm/atoz/
+meals: http://www.foodnetwork.com/recipes/a-z/
+countries: 
+
+
+Packages needed:
+python 2.7
+flask
+flask-sqlalchemy
+wtforms
+passlib
