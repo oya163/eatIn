@@ -189,6 +189,11 @@ class User(db.Model):
         return '<UserID %r>' % self.userid
 # END User
 
+def get_user_by_email(_email):
+    user = User.query.filter_by(email = _email).first()
+    return user
+# END get_user_by_email
+
 
 class OrderFood(db.Model):
     __tablename__ = 'orderfood'

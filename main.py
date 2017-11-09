@@ -11,6 +11,7 @@ from pymysql.cursors import DictCursor
 from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, validators
 from wtforms.fields.html5 import DateField
 
+import models
 
 # app/db config stuff
 app = Flask(__name__)
@@ -27,7 +28,7 @@ sys.setdefaultencoding('utf8')
 def index():
     if 'username' in session:
         username_session = escape(session['username']).capitalize()
-        return render_template('index.html', session_user_name=username_session)
+        return render_template('index.html', session_user_name = username_session)
     return redirect(url_for('login'))
 
 
@@ -37,43 +38,30 @@ def index():
 def login():
     if request.method == 'POST':
         # Get form fields
-        username = request.form['username']
-        password_candidate = request.form['password']
+        email = request.form['username']
+        passsword_candidate = request.form['password']
 
-        # database connect
-        conn = mysql.connect()
+        user = Models.get_user_by_email(email)
 
-        # Create cursor
-        cur = conn.cursor()
-
-        # Get user by username
-        result = cur.execute("SELECT * FROM user where emailid = %s", [username])
-
-        if result > 0:
-            # Get stored hash
-            data = cur.fetchone()
-            password = data['password']
-            first_name = data['fname']
-
+        if user != None:
             # Compare passwords
-            if sha256_crypt.verify(password_candidate, password):
+            if sha256_crypt.verify(password_candidate, user.password):
                 # Passed
                 session['logged_in'] = True
-                session['username'] = username
-                session['first_name'] = first_name
+                session['username'] = email
+                session['first_name'] = user.fname
 
                 flash('You are now logged in', 'success')
                 return redirect(url_for('dashboard'))
             else:
                 error = 'Invalid login'
-                return render_template('login.html', error=error)
+                return render_template('login.html', error = error)
         else:
-            error = 'Username not found'
-            return render_template('login.html', error=error)
+            error = 'Username %s not found' % (email)
+            return render_template('login.html', error = error)
 
-        # Close cursor
-        cur.close()
     return render_template('login.html')
+# END login
 
 
 @app.route('/logout')
@@ -82,6 +70,7 @@ def logout():
     session.clear()
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
+# END logout
 
 
 # Check if user logged in
