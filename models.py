@@ -135,18 +135,20 @@ class FoodItem(db.Model):
     __tablename__ = 'fooditem'
 
     foodid = db.Column(db.Integer, primary_key=True)
-    foodname = db.Column(db.String(100))
+    foodname = db.Column(db.String(200))
     food_des = db.Column(db.String(500))
-    cook_time = db.Column(db.String(10))
+    cook_time = db.Column(db.Integer)
     food_rating = db.Column(db.Float)
     price = db.Column(db.Float)
+    fn_id = db.Column(db.String(10))
 
-    def __init__(self, foodname, food_des, cook_time, food_rating, price):
+    def __init__(self, foodname, food_des, cook_time, food_rating, price, fn_id):
         self.foodname = foodname
         self.food_des = food_des
         self.cook_time = cook_time
         self.food_rating = food_rating
         self.price = price
+        self.fn_id = fn_id
 
     def __repr__(self):
         return '<FoodID %r>' % self.foodid

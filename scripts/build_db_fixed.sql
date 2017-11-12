@@ -41,7 +41,7 @@ CREATE TABLE `chef` (
   KEY `fk_chef_coutnryid_idx` (`countryid`),
   CONSTRAINT `fk_chef_coutnryid` FOREIGN KEY (`countryid`) REFERENCES `country` (`countryid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_chef_userid` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=65367 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=98050 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -148,7 +148,7 @@ CREATE TABLE `customer` (
   KEY `fk_customer_countryid_idx` (`countryid`),
   CONSTRAINT `fk_customer_countryid` FOREIGN KEY (`countryid`) REFERENCES `country` (`countryid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_customer_userid` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2002 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -160,13 +160,14 @@ DROP TABLE IF EXISTS `fooditem`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `fooditem` (
   `foodid` int(11) NOT NULL AUTO_INCREMENT,
-  `foodname` varchar(100) DEFAULT NULL,
+  `foodname` varchar(200) DEFAULT NULL,
   `food_des` varchar(500) DEFAULT NULL,
-  `cook_time` varchar(10) DEFAULT NULL,
+  `cook_time` int(11) DEFAULT NULL,
   `food_rating` float DEFAULT NULL,
   `price` float DEFAULT NULL,
+  `fn_id` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`foodid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=68517 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,7 +210,7 @@ CREATE TABLE `user` (
   `lname` varchar(50) DEFAULT NULL,
   `user_type` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=65429 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=98112 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -221,4 +222,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-11-05 18:49:30
+-- Dump completed on 2017-11-12  0:11:29
