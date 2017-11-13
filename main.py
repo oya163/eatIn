@@ -83,6 +83,8 @@ def is_logged_in(f):
             flash('Unauthorized, Please login', 'danger')
             return redirect(url_for('login'))
     return wrap
+# END is_logged_in
+
 
 #Dashboard
 @app.route('/dashboard')
@@ -111,7 +113,7 @@ def dashboard():
 
     return render_template('dashboard.html')
 
-"""
+
 def get_chefspecial():
     conn = mysql.connect()
     cur = conn.cursor()
@@ -129,7 +131,7 @@ class SignupForm(Form):
         validators.EqualTo('confirm', message='Passwords do not match')
     ])
     confirm = PasswordField('Confirm Password')
-    usertype = SelectField('User Type', choices=[('customer','Customer'),('chef','Chef')])
+    usertype = SelectField('User Type', choices=[('customer','Customer'), ('chef','Chef')])
     apartment_no = StringField('Apartment No', [validators.Length(min=1, max=50)])
     street = StringField('Street', [validators.Length(min=1, max=50)])
     city = StringField('City', [validators.Length(min=1, max=50)])
@@ -137,79 +139,63 @@ class SignupForm(Form):
     zipcode = StringField('Zipcode', [validators.Length(min=4, max=10)])
     country = StringField('Country', [validators.Length(min=2, max=50)])
     phone_number = StringField('Phone', [validators.Length(min=4, max=50)])
-    # preference = StringField('Preference', [validators.Length(min=4, max=50)])
-    cuisine = SelectField('Cuisine', choices=[(x['cuisineid'],x['cuisine_name']) for x in get_chefspecial()], coerce=int)
+    # cuisine = SelectField('Cuisine', choices=[(x['cuisineid'],x['cuisine_name']) for x in get_chefspecial()], coerce=int)
 
 
 # SignUp
-@app.route('/signup', methods=['GET','POST'])
+@app.route('/signup', methods=['GET', 'POST'])
+@app.route('/signup/', methods=['GET', 'POST'])
 def signup():
     form = SignupForm(request.form)
+
     if request.method == 'POST' and form.validate():
-        first_name = form.first_name.data
-        last_name = form.last_name.data
-        email_id = form.email_id.data
-        password = sha256_crypt.encrypt(str(form.password.data))
+        fname     = form.first_name.data
+        lname     = form.last_name.data
+        email     = form.email_id.data
+        passwd    = sha256_crypt.encrypt(str(form.password.data))
         user_type = form.usertype.data
-        apartment_no = form.apartment_no.data
-        street = form.street.data
-        city = form.city.data
-        state = form.state.data
-        zipcode = form.zipcode.data
-        country = form.country.data
-        phone_number = form.phone_number.data
-        # preference = form.preference.data
-        cuisine = form.cuisine.data
+        aptno     = form.apartment_no.data
+        street    = form.street.data
+        city      = form.city.data
+        state     = form.state.data
+        zipcode   = form.zipcode.data
+        country   = form.country.data
+        phoneno   = form.phone_number.data
 
+        res = create_user(fname, lname, email, passwd, aptno, street, city,
+                          state, zipcode, country, phoneno, user_type)
 
-        # database connect
-        conn = mysql.connect()
+        if (res)
+            flash('You are now registered', 'success')
+            return redirect(url_for('login'))
+        else
+            flash('Error in registration', 'failure')
+            return render_template('signup.html', form = form)
 
-        # Create cursor
-        cur = conn.cursor()
+    return render_template('signup.html', form = form)
+# END signup
 
-        app.logger.info('cuisine', cuisine)
-        # Execute query
-        cur.execute("INSERT INTO user(emailid, password, fname, lname, user_type) \
-                    VALUES(%s, %s, %s, %s, %s)",
-                    (email_id, password, first_name, last_name, user_type))
-        if user_type == 'customer':
-            cur.execute("INSERT INTO customer (customerid,address,street,\
-                          city,state,zipcode,country,phone_number,preference) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-                        (int(cur.lastrowid), apartment_no, street, city, \
-                         state, int(zipcode), country, phone_number, cuisine))
-        elif user_type == 'chef':
-            cur.execute("INSERT INTO chef (chefid,address,street,city,state,zipcode,country,phone_number,rating) \
-                         values(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-                (int(cur.lastrowid), apartment_no, street, city, state, int(zipcode), country, phone_number,0))
-            cur.execute("INSERT INTO `chefspecial` (`chefid`, `cuisineid`) VALUES (%s,%s) ", (int(cur.lastrowid),[cuisine]))
-
-        conn.commit()
-
-        cur.close()
-
-        flash('You are now registered and can login', 'success')
-
-        return redirect(url_for('login'))
-    return render_template('signup.html', form=form)
-"""
 
 @app.route('/fooditem')
+@app.route('/fooditem/')
 def fooditem():
     return render_template('fooditem.html')
 
 
 @app.route('/orderhistory')
+@app.route('/orderhistory/')
 def orderhistory():
     return render_template('orderhistory.html')
 
 
 @app.route('/about')
+@app.route('/about/')
 def about():
     return render_template('about.html')
 
 
 @app.route('/contactus')
+@app.route('/contactus/')
 def contactus():
     return render_template('contactus.html')
 

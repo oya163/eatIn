@@ -86,6 +86,11 @@ class Country(db.Model):
         return '<CountryID %r>' % (self.countryid)
 # END Country
 
+def get_country_id_by_name(_countryname):
+    country = Country.query.filter_by(countryname = _countryname).first()  
+    return country
+# END get_country_id_by_name
+
 
 class Cuisine(db.Model):
     __tablename__ = 'cuisine'
@@ -195,6 +200,28 @@ def get_user_by_email(_email):
     user = User.query.filter_by(email = _email).first()
     return user
 # END get_user_by_email
+
+def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode, country, phoneno, user_type):
+    # create user first
+    user = User(email, passwd, fname, lname, user_type)
+    db.session.add(user)
+    user_id = user.userid
+
+    countryid = get_country_id_by_name(country).countryid
+
+    # now create customer/chef
+    if (type == "customer"):
+        customer = Customer(aptno, street, city, state, zipcode, countryid, phone_number, None, userid)
+        db.session.add(customer)
+
+    elif (type == "chef"):
+        chef = Chef(aptno,, street, city, state, zipcode, countryid, phone_number, None, userid, None)
+        db.session.add(chef)
+
+    db.session.commit()
+
+    return True
+# END create_user
 
 
 class OrderFood(db.Model):
