@@ -135,10 +135,10 @@ def signup():
         res = create_user(fname, lname, email, passwd, aptno, street, city,
                           state, zipcode, country, phoneno, user_type)
 
-        if (res)
+        if (res):
             flash('You are now registered', 'success')
             return redirect(url_for('login'))
-        else
+        else:
             flash('Error in registration', 'failure')
             return render_template('signup.html', form = form)
 

@@ -226,7 +226,7 @@ def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode
         db.session.add(customer)
 
     elif (type == "chef"):
-        chef = Chef(aptno,, street, city, state, zipcode, countryid, phone_number, None, userid, None)
+        chef = Chef(aptno, street, city, state, zipcode, countryid, phone_number, None, userid, None)
         db.session.add(chef)
 
     db.session.commit()
