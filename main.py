@@ -3,7 +3,7 @@ from functools import wraps
 from passlib.hash import sha256_crypt
 from flaskext.mysql import MySQL
 from pymysql.cursors import DictCursor
-from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, validators
+from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, validators, DateTimeField
 from wtforms.fields.html5 import DateField
 
 app = Flask(__name__)
@@ -230,6 +230,7 @@ def orderpage():
 class DashboardOrderForm(Form):
     order_name = StringField('What\'s your order', [validators.Length(min=1, max=50)])
     requested_date = DateField('Requested date', format='%m/%d/%Y')
+    # requested_date = DateTimeField('Requested date', format='%Y-%m-%d %H:%M')
     comments = TextAreaField('Comments', [validators.Length(min=0)])
 
 
@@ -246,6 +247,7 @@ def dashboard_order():
         page containing chef list based on the location
         should be displayed
         '''
+        flash('Your order is placed', 'success')
         return redirect(url_for('cheflist'))
     return render_template('dashboard_order.html', form=form)
 
