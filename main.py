@@ -200,5 +200,6 @@ def cheflist():
 
 
 if __name__ == '__main__':
+    forms.init_countries(models.get_all_countries())
     app.secret_key = 'secret123'
     app.run(debug=True)

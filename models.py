@@ -102,6 +102,11 @@ def get_country_id_by_name(_countryname):
     return country
 # END get_country_id_by_name
 
+def get_all_countries():
+    countries = Country.query.order_by(Country.countryname).all()
+    return countries
+# END get_all_countries
+
 
 class Cuisine(db.Model):
     __tablename__ = 'cuisine'
