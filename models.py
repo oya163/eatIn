@@ -70,6 +70,17 @@ class ChefSpecial(db.Model):
         return '<ChefID %r CuisineID %r>' % (self.chefid, self.cuisineid)
 # END ChefSpecial
 
+def get_chef_specials_by_chef_id(_chefid):
+    cspecs = ChefSpecial.query.filter_by(chefid = _chefid).all()
+
+    cuisines = []
+    for cspec in cspecs:
+        cuisine = Cuisine.query.filter_by(cuisineid = cspec.cuisineid).first()
+        cuisines.append(cuisine)
+
+    return cuisines
+# END get_chef_specials_by_chef_id
+    
 
 class Country(db.Model):
     __tablename__ = 'country'
