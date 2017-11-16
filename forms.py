@@ -7,7 +7,7 @@ class SignupForm(Form):
         validators.DataRequired()
     ])
 
-    last_name = StringField('Last Name', [
+    last_name = StringField('Last Name *', [
         validators.Length(min = 1, max = 50),
         validators.DataRequired()
     ])
@@ -17,12 +17,12 @@ class SignupForm(Form):
         validators.DataRequired()
     ])
 
-    password = PasswordField('Password', [
+    password = PasswordField('Password *', [
         validators.DataRequired(),
-        validators.EqualTo('confirm', message = 'Passwords do not match')
+        validators.EqualTo('confirm', message = ' Passwords do not match')
     ])
 
-    confirm = PasswordField('Confirm Password', [
+    confirm = PasswordField('Confirm Password *', [
         validators.DataRequired()
     ])
 
@@ -31,17 +31,17 @@ class SignupForm(Form):
     )
 
     # address information is optional
-    apartment_no = StringField('Apartment No', [validators.Length(min = 1, max = 50)])
-    street = StringField('Street', [validators.Length(min = 1, max = 50)])
-    city = StringField('City', [validators.Length(min = 1, max = 50)])
-    state = StringField('State', [validators.Length(min = 2, max = 10)])
-    zipcode = StringField('Zipcode', [validators.Length(min = 4, max = 10)])
+    apartment_no = StringField('Apartment No', [validators.Length(max = 50)])
+    street = StringField('Street', [validators.Length(max = 50)])
+    city = StringField('City', [validators.Length(max = 50)])
+    state = StringField('State', [validators.Length(max = 10)])
+    zipcode = StringField('Zipcode', [validators.Length(max = 10)])
 
     # build list of countries for selection
     country = SelectField('Country', coerce = int)
 
     # optional
-    phone_number = StringField('Phone', [validators.Length(min=4, max=50)])
+    phone_number = StringField('Phone', [validators.Length(max=50)])
     # cuisine = SelectField('Cuisine', choices=[(x['cuisineid'],x['cuisine_name']) for x in get_chefspecial()], coerce=int)
 # END SignupForm
 

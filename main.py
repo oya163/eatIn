@@ -10,11 +10,11 @@ from passlib.hash import sha256_crypt
 from config import *
 
 # app/db config stuff
-app = Flask(__name__)
-app.config["APPLICATION_ROOT"] = APP_ROOT
-app.config['SQLALCHEMY_DATABASE_URI'] = SQL_URI
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.secret_key = SEC_KEY
+#app = Flask(__name__)
+#app.config["APPLICATION_ROOT"] = APP_ROOT
+#app.config['SQLALCHEMY_DATABASE_URI'] = SQL_URI
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+#app.secret_key = SEC_KEY
 
 if sys.version_info.major < 3:
     reload(sys)
@@ -28,6 +28,10 @@ def simple(env, resp):
 import models
 import forms
 
+from models import app
+from models import db
+
+db.create_all()
 
 @app.route('/')
 def index():
@@ -44,17 +48,20 @@ def login():
     if request.method == 'POST':
         # Get form fields
         email = request.form['username']
-        passsword_candidate = request.form['password']
+        password_candidate = request.form['password']
 
-        user = Models.get_user_by_email(email)
+        user = models.get_user_by_email(email)
 
-        if user != None:
+        if (user != None):
             # Compare passwords
             if sha256_crypt.verify(password_candidate, user.password):
                 # Passed
                 session['logged_in'] = True
                 session['username'] = email
                 session['first_name'] = user.fname
+                session['userid'] = user.userid
+                session['custid'] = models.get_customer_by_user(user)
+                session['chefid'] = models.get_chef_by_user(user)
 
                 flash('You are now logged in', 'success')
                 return redirect(url_for('dashboard'))
@@ -96,7 +103,8 @@ def is_logged_in(f):
 @app.route('/dashboard/')
 @is_logged_in
 def dashboard():
-    # database connect
+    print session['userid'], session['custid'], session['chefid']
+    # orders = models.get_orders_by_customer_id(_
     # conn = mysql.connect()
     #
     # # Create cursor
@@ -140,14 +148,14 @@ def signup():
         country   = form.country.data
         phoneno   = form.phone_number.data
 
-        res = create_user(fname, lname, email, passwd, aptno, street, city,
-                          state, zipcode, country, phoneno, user_type)
+        r = models.create_user(fname, lname, email, passwd, aptno, street, city,
+                               state, zipcode, country, phoneno, user_type)
 
-        if (res):
+        if (r == 0):
             flash('You are now registered', 'success')
             return redirect(url_for('login'))
-        else:
-            flash('Error in registration', 'failure')
+        elif (r == 1):
+            flash("User with email %s already exists" % (email), 'danger')
             return render_template('signup.html', form = form)
 
     return render_template('signup.html', form = form)
