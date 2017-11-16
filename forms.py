@@ -1,18 +1,6 @@
 from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, validators
 from wtforms.fields.html5 import DateField
 
-country_tups = []
-usertype_tups = [('customer','Customer'), ('chef','Chef')]
-
-def init_countries(_countries):
-    country_tups = []
-    for c in _countries:
-        country_tups.append((c.countryid, c.countryname))
-    print country_tups
-    print usertype_tups
-# END init_countries
-
-
 class SignupForm(Form):
     first_name = StringField('First Name *', [
         validators.Length(min = 1, max = 50),
@@ -39,7 +27,7 @@ class SignupForm(Form):
     ])
 
     usertype = SelectField('User Type',
-        choices = usertype_tups
+        choices = [('customer','Customer'), ('chef','Chef')]
     )
 
     # address information is optional
@@ -50,10 +38,7 @@ class SignupForm(Form):
     zipcode = StringField('Zipcode', [validators.Length(min = 4, max = 10)])
 
     # build list of countries for selection
-    country = SelectField('Country',
-        choices = country_tups,
-        coerce = int
-    )
+    country = SelectField('Country', coerce = int)
 
     # optional
     phone_number = StringField('Phone', [validators.Length(min=4, max=50)])

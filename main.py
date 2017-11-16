@@ -6,20 +6,27 @@ from flask import Flask, session, redirect, g, url_for, escape, request, render_
 
 from functools import wraps
 from passlib.hash import sha256_crypt
-from flaskext.mysql import MySQL
-from pymysql.cursors import DictCursor
 
-import models
-import forms
+from config import *
 
 # app/db config stuff
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://<user>:<pass>@localhost/eatin'
+app.config["APPLICATION_ROOT"] = APP_ROOT
+app.config['SQLALCHEMY_DATABASE_URI'] = SQL_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.secret_key = SEC_KEY
 
 if sys.version_info.major < 3:
     reload(sys)
 sys.setdefaultencoding('utf8')
+
+# routing access
+def simple(env, resp):
+  resp(b'200 OK', [(b'Content-Type', b'text/plain')])
+  return [b'eating']
+
+import models
+import forms
 
 
 @app.route('/')
@@ -117,6 +124,7 @@ def dashboard():
 @app.route('/signup/', methods=['GET', 'POST'])
 def signup():
     form = forms.SignupForm(request.form)
+    form.country.choices = [(c.countryid, c.countryname) for c in models.get_all_countries()]
 
     if request.method == 'POST' and form.validate():
         fname     = form.first_name.data
@@ -200,6 +208,4 @@ def cheflist():
 
 
 if __name__ == '__main__':
-    forms.init_countries(models.get_all_countries())
-    app.secret_key = 'secret123'
-    app.run(debug=True)
+    app.run(host = "127.0.0.1", port = 5050, debug = True)
