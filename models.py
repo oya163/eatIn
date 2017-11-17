@@ -159,7 +159,7 @@ class Customer(db.Model):
         self.userid = userid
 
     def __repr__(self):
-        return '<CustomerID %r>' % self.cutomerid
+        return '<CustomerID %r>' % self.customerid
 # END Customer
 
 def get_customer_by_user(_user):
@@ -244,15 +244,18 @@ def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode
 
     user = User(email, passwd, fname, lname, user_type)
     db.session.add(user)
+    db.session.commit()
+
     user_id = user.userid
+    zipcode = int(zipcode) if zipcode else 0
+    phoneno = int(phoneno) if phoneno else 0
 
     # now create customer/chef
-    if (type == "customer"):
-        customer = Customer(aptno, street, city, state, zipcode, countryid, phone_number, None, userid)
+    if (user_type == "customer"):
+        customer = Customer(aptno, street, city, state, zipcode, countryid, phoneno, None, user_id)
         db.session.add(customer)
-
-    elif (type == "chef"):
-        chef = Chef(aptno, street, city, state, zipcode, countryid, phone_number, None, userid, None)
+    elif (user_type == "chef"):
+        chef = Chef(aptno, street, city, state, zipcode, countryid, phoneno, None, user_id, None)
         db.session.add(chef)
 
     db.session.commit()

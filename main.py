@@ -60,13 +60,25 @@ def login():
                 session['username'] = email
                 session['first_name'] = user.fname
                 session['userid'] = user.userid
-                session['custid'] = models.get_customer_by_user(user)
-                session['chefid'] = models.get_chef_by_user(user)
+
+                # set customer and chef ids for convenience
+                cust = models.get_customer_by_user(user)
+                chef = models.get_chef_by_user(user)
+
+                if (cust):
+                    session['custid'] = cust.customerid
+                else:
+                    session['custid'] = None
+
+                if (chef):
+                    session['chefid'] = chef.chefid
+                else:
+                    session['chefid'] = None
 
                 flash('You are now logged in', 'success')
                 return redirect(url_for('dashboard'))
             else:
-                error = 'Invalid login'
+                error = 'Invalid credentials'
                 return render_template('login.html', error = error)
         else:
             error = 'Username %s not found' % (email)
