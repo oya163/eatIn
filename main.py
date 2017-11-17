@@ -31,7 +31,7 @@ import forms
 from models import app
 from models import db
 
-db.create_all()
+#db.create_all()
 
 @app.route('/')
 def index():
@@ -116,12 +116,22 @@ def is_logged_in(f):
 @is_logged_in
 def dashboard():
     print session['userid'], session['custid'], session['chefid']
-    # orders = models.get_orders_by_customer_id(_
-    # conn = mysql.connect()
-    #
-    # # Create cursor
-    # cur = conn.cursor()
-    #
+
+    # 2 lists of orders per user:
+    #   orders as a chef that the user has to carry
+    #   orders as a customer that the user is waiting for
+    _orders_as_cust = []
+    _orders_as_chef = []
+
+    if (session['custid']):
+        _orders_as_cust = models.get_orders_by_customer_id(session['custid'])
+
+    if (session['chefid']):
+        _orders_as_chef = models.get_orders_by_customer_id(session['chefid'])
+
+    return render_template('dashboard.html',
+                           orders_as_cust = _orders_as_cust,
+                           orders_as_chef = _orders_as_chef)
     # #Get order history
     # result = cur.execute("SELECT * FROM ORDERHISTORY")
     #
@@ -136,7 +146,7 @@ def dashboard():
     # # Close connection
     # cur.close()
 
-    return render_template('dashboard.html')
+    #return render_template('dashboard.html')
 # END dashboard
 
 

@@ -49,6 +49,11 @@ def get_chef_by_user(_user):
     return chef
 # END get_chef_by_user
 
+def get_chef_by_id(_chefid):
+    chef = Chef.query.filter_by(chefid = _chefid)
+    return chef
+# END get_chef_by_id
+
 
 class ChefReachout(db.Model):
     __tablename__ = 'chefreachout'
@@ -167,6 +172,11 @@ def get_customer_by_user(_user):
     return cust
 # END get_customer_by_user
 
+def get_customer_by_id(_custid):
+    cust = Customer.query.filter_by(customerid = _custid)
+    return cust
+# END get_customer_by_id
+
 
 class FoodItem(db.Model):
     __tablename__ = 'fooditem'
@@ -233,6 +243,11 @@ def get_user_by_email(_email):
     return user
 # END get_user_by_email
 
+def get_user_by_id(_userid):
+    user = User.query.filter_by(userid = _userid)
+    return user
+# END get_user_by_id
+
 def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode, countryid, phoneno, user_type):
     # create user first
     print "creating user:", fname, lname, email, passwd, aptno, street, city, state, zipcode, countryid, phoneno, user_type
@@ -288,6 +303,11 @@ class OrderFood(db.Model):
 # END OrderFood
 
 def get_orders_by_customer_id(_custid):
-    order = OrderFood.query.filter_by(customerid = _custid).all()
-    return order
+    orders = OrderFood.query.filter_by(customerid = _custid).all()
+    return orders
 # END get_orders_by_customer_id
+
+def get_orders_by_chef_id(_chefid):
+    orders = OrderFood.query.filter_by(chefid = _chefid).all()
+    return orders
+# END get_orders_by_chef_id
