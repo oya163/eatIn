@@ -54,6 +54,10 @@ def get_chef_by_id(_chefid):
     return chef
 # END get_chef_by_id
 
+def get_all_chefs():
+    return Chef.query.order_by(chefid).all()
+# END get_all_chefs
+
 
 class ChefReachout(db.Model):
     __tablename__ = 'chefreachout'
@@ -176,6 +180,10 @@ def get_customer_by_id(_custid):
     cust = Customer.query.filter_by(customerid = _custid)
     return cust
 # END get_customer_by_id
+
+def get_all_customers():
+    return Customer.query.order_by(customerid).all()
+# END get_all_customers
 
 
 class FoodItem(db.Model):
@@ -311,3 +319,7 @@ def get_orders_by_chef_id(_chefid):
     orders = OrderFood.query.filter_by(chefid = _chefid).all()
     return orders
 # END get_orders_by_chef_id
+
+def get_all_users():
+    return User.query.order_by(userid).all()
+# END get_all_users
