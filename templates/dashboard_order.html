@@ -7,20 +7,30 @@
         <form method="post" action="">
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.order_name, class_="form-control") }}
+                    {{ render_field(form.cuisine, class_="form-control") }}
                 </div>
             </div>
-            <div class="form-group">
-                <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.requested_date, class_="form-control datepicker") }}
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.comments, class_="form-control") }}
-                </div>
-            </div>
-            <p><input type="submit" class="btn btn-primary" value="Order"> </p>
+            <p><input type="submit" class="btn btn-primary" value="Search"></p>
         </form>
+
+        <table class="table table-striped">
+        <tr>
+            <th>#</th>
+            <th>Food Name</th>
+            <th>Prep Time</th>
+            <th>Price</th>
+            <th>Rating</th>
+        </tr>
+        {% for food in foods %}
+            <tr>
+                <td>{{ food[0] }}</td>
+                <td><a href="{{ url_for('fooditem', foodid=food[0]) }}">{{ food[3] }}</a></td>
+                <td>{{ food[5] }}</td>
+                <td>{{ food[7] }}</td>
+                <td>{{ food[6] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
     </div>
 {% endblock %}

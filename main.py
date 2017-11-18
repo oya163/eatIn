@@ -110,7 +110,6 @@ def is_logged_in(f):
 # END is_logged_in
 
 
-#Dashboard
 @app.route('/dashboard')
 @app.route('/dashboard/')
 @is_logged_in
@@ -118,7 +117,7 @@ def dashboard():
     print session['userid'], session['custid'], session['chefid']
 
     # 2 lists of orders per user:
-    #   orders as a chef that the user has to carry
+    #   orders as a chef that the user has to carry out
     #   orders as a customer that the user is waiting for
     _orders_as_cust = []
     _orders_as_chef = []
@@ -132,21 +131,6 @@ def dashboard():
     return render_template('dashboard.html',
                            orders_as_cust = _orders_as_cust,
                            orders_as_chef = _orders_as_chef)
-    # #Get order history
-    # result = cur.execute("SELECT * FROM ORDERHISTORY")
-    #
-    # orders = cur.fetchall(result)
-    #
-    # if orders > 0:
-    #     return render_template('dashboard_order.html', orders=orders)
-    # else:
-    #     msg = "No order found!"
-    #     return  render_template('dashboard_order.html', msg=msg)
-    #
-    # # Close connection
-    # cur.close()
-
-    #return render_template('dashboard.html')
 # END dashboard
 
 
@@ -184,10 +168,16 @@ def signup():
 # END signup
 
 
-@app.route('/fooditem')
-@app.route('/fooditem/')
-def fooditem():
-    return render_template('fooditem.html')
+@app.route('/fooditem', methods=['GET', 'POST'])
+@app.route('/fooditem/', methods=['GET', 'POST'])
+@app.route('/fooditem/<foodid>', methods=['GET', 'POST'])
+def fooditem(foodid):
+    food = models.get_fooditem_by_id(int(foodid))
+    chefs = models.get_chefs_by_food_id(foodid)
+    print food
+
+    return render_template('fooditem.html', food = food,
+                                            chefs = chefs)
 
 
 @app.route('/orderhistory')
@@ -210,31 +200,47 @@ def contactus():
 
 @app.route('/orderpage', methods=['GET', 'POST'])
 def orderpage():
+    # to place an order:
+    #   - first pick a cuisine type
+    #   - then pick a meal
+    #   - then pick a chef and time
     form = forms.OrderPageForm(request.form)
-    if request.method == 'POST' and form.validate():
+    form.cuisine.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
+
+    if (request.method == 'POST' and form.validate()):
         return render_template('orderpage.html')
-    return render_template('orderpage.html', form=form)
+
+    return render_template('orderpage.html', form = form)
 
 
 @app.route('/dashboard_order', methods=['GET', 'POST'])
+@app.route('/dashboard_order/', methods=['GET', 'POST'])
 @is_logged_in
 def dashboard_order():
     form = forms.DashboardOrderForm(request.form)
-    if request.method == 'POST' and form.validate():
-        order_name = form.order_name.data
-        requested_date = form.requested_date.data
-        comments = form.comments.data
-        '''
-        When order food is clicked
-        page containing chef list based on the location
-        should be displayed
-        '''
-        return redirect(url_for('cheflist'))
-    return render_template('dashboard_order.html', form=form)
+    form.cuisine.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
+
+    if (request.method == 'POST' and form.validate()):
+        cuisineid = form.cuisine.data
+        print cuisineid
+        foods = models.get_fooditems_by_cuisine_id(cuisineid)
+
+        return render_template('dashboard_order.html', form = form,
+                                                       foods = foods)
+
+    return render_template('dashboard_order.html', form = form,
+                                                   foods = [])
 
 @app.route('/cheflist', methods=['GET', 'POST'])
 def cheflist():
     return render_template('cheflist.html')
+
+
+@app.route('/meallist', methods=['GET', 'POST'])
+@app.route('/meallist/', methods=['GET', 'POST'])
+def meallist():
+    return render_template('cheflist.html')
+
 
 
 if __name__ == '__main__':

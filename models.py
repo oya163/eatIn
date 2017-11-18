@@ -1,6 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+
 from sqlalchemy import text
+from sqlalchemy import join
+from sqlalchemy import select
+from sqlalchemy.sql import text
 
 from config import *
 
@@ -100,7 +104,39 @@ def get_chef_specials_by_chef_id(_chefid):
 
     return cuisines
 # END get_chef_specials_by_chef_id
-    
+
+def get_chefs_by_cuisine_id(_cuisineid):
+    stmt = "SELECT * " \
+           "FROM chefspecial JOIN chef ON chefspecial.chefid = chef.chefid " \
+           "WHERE cuisineid = %s" % (str(_cuisineid))
+    # print stmt
+
+    res = db.engine.execute(text(stmt))
+    chefs = []
+    for r in res:
+        chefs.append(r)
+
+    return chefs
+# END get_chefs_by_cuisine_id
+
+# return format is: [userid, chefid, fname, lname, countryid, countryname]
+def get_chefs_by_food_id(_foodid):
+    stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname, country.countryid, country.countryname " \
+           "FROM (((chefspecial JOIN chef ON chefspecial.chefid = chef.chefid) " \
+           "  JOIN cuisineitem ON cuisineitem.cuisineid = chefspecial.cuisineid) " \
+           "  JOIN user ON user.userid = chef.userid) " \
+           "  JOIN country ON chef.countryid = country.countryid " \
+           "WHERE cuisineitem.foodid = %s" % (_foodid)
+    # print stmt
+
+    res = db.engine.execute(text(stmt))
+    chefs = []
+    for r in res:
+        chefs.append(r)
+
+    return chefs
+# END get_chefs_by_food_id
+
 
 class Country(db.Model):
     __tablename__ = 'country'
@@ -214,6 +250,11 @@ class FoodItem(db.Model):
         return '<FoodID %r>' % self.foodid
 # END FoodItem
 
+def get_fooditem_by_id(_foodid):
+    food = FoodItem.query.filter_by(foodid = _foodid).first()
+    return food
+# END get_fooditem_by_id
+
 def get_all_fooditems():
     return FoodItem.query.order_by(FoodItem.foodname).all()
 # END get_all_fooditems
@@ -232,6 +273,24 @@ class CuisineItem(db.Model):
     def __repr__(self):
         return '<FoodID %r CuisineID %r>' % (self.foodid, self.cuisineid)
 # END CuisineItem
+
+# This actually doesn't return a list of FoodItem objects, but instead a list
+# with indicies that correspond to the column numbers from executing the sql
+# query below through mysql. This is because we are executing a raw SQL stmt
+# without any mapping to the ORM.
+def get_fooditems_by_cuisine_id(_cuisineid):
+    stmt = "SELECT * " \
+           "FROM cuisineitem JOIN fooditem ON cuisineitem.foodid = fooditem.foodid " \
+           "WHERE cuisineid = %s" % (str(_cuisineid))
+    # print stmt
+
+    res = db.engine.execute(text(stmt))
+    foods = []
+    for r in res:
+        foods.append(r)
+
+    return foods
+# END get_fooditems_by_cuisine_id
 
 
 class User(db.Model):

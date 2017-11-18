@@ -47,14 +47,21 @@ class SignupForm(Form):
 
 
 class OrderPageForm(Form):
-    cuisineName = StringField('cuisine', [validators.Length(min=1, max=25)])
+    cuisine = SelectField('Cuisine', coerce = int)
+
+
     orderDate = StringField('datepicker')
     comments = StringField('comments', [validators.Length(min=1, max=50)])
 # END OrderPageForm
 
 
+class FindMealForm(Form):
+    cuisine = SelectField('Cuisine', coerce = int)
+# END FindMealForm
+
+
 class DashboardOrderForm(Form):
-    order_name = StringField('What\'s your order', [validators.Length(min=1, max=50)])
-    requested_date = DateField('Requested date', format='%m/%d/%Y')
-    comments = TextAreaField('Comments', [validators.Length(min=0)])
+    cuisine = SelectField('Pick a Cuisine', coerce = int)
+    #requested_date = DateField('Requested date', format='%m/%d/%Y')
+    #comments = TextAreaField('Comments', [validators.Length(min=0)])
 # END DashboardOrderForm
