@@ -55,7 +55,7 @@ def get_chef_by_id(_chefid):
 # END get_chef_by_id
 
 def get_all_chefs():
-    return Chef.query.order_by(chefid).all()
+    return Chef.query.order_by(Chef.chefid).all()
 # END get_all_chefs
 
 
@@ -141,6 +141,11 @@ class Cuisine(db.Model):
         return '<CuisineID %r>' % self.cuisineid
 # END Cuisine
 
+def get_all_cuisines():
+    cuisines = Cuisine.query.order_by(Cuisine.cuisineid).all()
+    return cuisines
+# END get_all_cuisines
+
 
 class Customer(db.Model):
     __tablename__ = 'customer'
@@ -182,7 +187,7 @@ def get_customer_by_id(_custid):
 # END get_customer_by_id
 
 def get_all_customers():
-    return Customer.query.order_by(customerid).all()
+    return Customer.query.order_by(Customer.customerid).all()
 # END get_all_customers
 
 
@@ -209,6 +214,10 @@ class FoodItem(db.Model):
         return '<FoodID %r>' % self.foodid
 # END FoodItem
 
+def get_all_fooditems():
+    return FoodItem.query.order_by(FoodItem.foodname).all()
+# END get_all_fooditems
+
 
 class CuisineItem(db.Model):
     __tablename__ = 'cuisineitem'
@@ -217,7 +226,7 @@ class CuisineItem(db.Model):
     cuisineid = db.Column(db.Integer, db.ForeignKey('cuisine.cuisineid'), primary_key=True)
 
     def __init__(self, foodid, cuisineid):
-        self.chefid = foodid
+        self.foodid = foodid
         self.cuisineid = cuisineid
 
     def __repr__(self):
