@@ -237,12 +237,55 @@ def account():
     chef = models.get_chef_by_id(session['chefid'])
     cust = models.get_customer_by_id(session['custid'])
 
-    # figure out the user type
+    if (request.method == 'POST' and form.validate()):
+        fname     = form.first_name.data
+        lname     = form.last_name.data
+        email     = form.email_id.data
+        passwd    = sha256_crypt.encrypt(str(form.password.data))
+        user_type = form.usertype.data
+        aptno     = form.apartment_no.data
+        street    = form.street.data
+        city      = form.city.data
+        state     = form.state.data
+        zipcode   = form.zipcode.data
+        country   = form.country.data
+        phoneno   = form.phone_number.data
+        chefspec  = form.chefspec.data
+        custpref  = form.custpref.data
+
+        # update with new info if necessary
+        r = user.update(fname, lname, email, passwd, user_type, aptno, street,
+                        city, state, zipcode, country, phoneno, chefspec,
+                        custpref)
+
+        if (r == 0):
+            flash('User details updated', 'success')
+        else:
+            flash('Update failed', 'danger')
+
+        return render_template('account.html', form = form,
+                                               chef = chef,
+                                               cust = cust)
+
+
+    # figure out the user type and prefill fields with existing info
+    # probably a better way to do this but whatever
     usertype = ""
     aptno, street, city, state, zipcode, countryid, phoneno = (None,)*7
     chefspec = None
     custpref = None
-    if (chef):
+    if (chef and cust):
+        usertype  = "both"
+        aptno     = chef.address
+        street    = chef.street
+        city      = chef.city
+        state     = chef.state
+        zipcode   = chef.zipcode
+        countryid = chef.countryid
+        phoneno   = chef.phone_number
+        chefspec  = chef.get_speciality()
+        custpref  = cust.preference
+    elif (chef):
         usertype  = "chef"
         aptno     = chef.address
         street    = chef.street
@@ -251,7 +294,7 @@ def account():
         zipcode   = chef.zipcode
         countryid = chef.countryid
         phoneno   = chef.phone_number
-        
+        chefspec  = chef.get_speciality()
     elif (cust):
         usertype  = "customer"
         aptno     = cust.address
@@ -261,15 +304,7 @@ def account():
         zipcode   = cust.zipcode
         countryid = cust.countryid
         phoneno   = cust.phone_number
-    elif (chef and cust):
-        usertype  = "both"
-        aptno     = chef.address
-        street    = chef.street
-        city      = chef.city
-        state     = chef.state
-        zipcode   = chef.zipcode
-        countryid = chef.countryid
-        phoneno   = chef.phone_number
+        custpref  = cust.preference
 
     form.first_name.data = user.fname
     form.last_name.data  = user.lname
@@ -285,10 +320,12 @@ def account():
     form.country.data      = countryid
     form.phone_number.data = phoneno
 
-    return render_template('account.html', form = form)
+    return render_template('account.html', form = form,
+                                           chef = chef,
+                                           cust = cust)
 # END account
 
-
+# TODO: delete this later, using dashboard_order instead
 @app.route('/orderpage', methods=['GET', 'POST'])
 def orderpage():
     # to place an order:

@@ -53,10 +53,9 @@ class Chef(db.Model):
         return get_user_by_id(self.userid)
 
     def get_speciality(self):
-        stmt = "SELECT * " \
-               "FROM chefspecial JOIN chef ON chefspecial.chefid = chef.chefid " \
-               "WHERE cuisineid = %s" % (str(_cuisineid))
-        # print stmt
+        chefspec = ChefSpecial.query.filter_by(chefid = self.chefid).first()
+        cuisine = Cuisine.query.filter_by(cuisineid = chefspec.cuisineid).first()
+        return cuisine
 
 # END Chef
 
@@ -324,6 +323,11 @@ class User(db.Model):
 
     def __repr__(self):
         return '<UserID %r>' % self.userid
+
+    def update(self, _fname, _lname, _email, passwd, user_type, aptno, street,
+               city, state, zipcode, countryid, phoneno, chefspecid, custpref):
+        # update fields if needed...
+        return 0
 # END User
 
 def get_user_by_email(_email):

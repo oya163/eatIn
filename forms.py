@@ -52,15 +52,15 @@ class SignupForm(Form):
 class AccountForm(Form):
     # General options
     first_name = StringField('First Name', [
-        validators.Length(min = 1, max = 50),
+        validators.Length(max = 50),
     ])
 
     last_name = StringField('Last Name', [
-        validators.Length(min = 1, max = 50),
+        validators.Length(max = 50),
     ])
 
     email_id = StringField('Email', [
-        validators.Length(min = 6, max = 50),
+        validators.Length(max = 50),
     ])
 
     password = PasswordField('Password', [
@@ -86,8 +86,7 @@ class AccountForm(Form):
     chefspec = SelectField('Chef Speciality Cuisine', coerce = int)
 
     # Customer options
-    custpref = SelectField('Preffered Cuisine', coerce = int)
-
+    custpref = StringField('Phone', [validators.Length(max=500)])
 # END AccountForm
 
 

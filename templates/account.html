@@ -7,6 +7,7 @@
 
     <div class = "">
         <form method="POST" action="">
+            <h1><small>General Settings</small></h1>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
                     {{ render_field(form.first_name, class_="form-control") }}
@@ -72,6 +73,27 @@
                     {{ render_field(form.phone_number, class_="form-control") }}
                 </div>
             </div>
+
+            {% if chef %}
+            <br/>
+            <h1><small>Chef Settings</small></h1>
+            <div class="form-group">
+                <div class="input-group" aria-describedby="basic-addon3">
+                    {{ render_field(form.chefspec, class_="form-control") }}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if cust %}
+            <br/>
+            <h1><small>Customer Settings</small></h1>
+            <div class="form-group">
+                <div class="input-group" aria-describedby="basic-addon3">
+                    {{ render_field(form.chefspec, class_="form-control") }}
+                </div>
+            </div>
+            {% endif %}
+
             <p><input type="submit" class="btn btn-primary" value="Update"> </p>
         </form>
     </div>
