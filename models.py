@@ -385,6 +385,12 @@ class OrderFood(db.Model):
 
     def __repr__(self):
         return '<OrderID %r>' % self.orderid
+
+    def get_food(self):
+        return get_fooditem_by_id(self.foodid)
+
+    def get_chef(self):
+        return get_chef_by_id(self.chefid)
 # END OrderFood
 
 def get_orders_by_customer_id(_custid):
@@ -402,8 +408,8 @@ def create_order(_custid, _chefid, _foodid, _req_date, _comment):
     print order_date
 
     order = OrderFood(_custid, _chefid, _foodid, order_date, _req_date, _comment)
-    #db.session.add(order)
-    #db.session.commit()
+    db.session.add(order)
+    db.session.commit()
 
     return 0
 # END create_order

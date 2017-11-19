@@ -104,7 +104,7 @@ CREATE TABLE `cuisine` (
   `cuisineid` int(11) NOT NULL AUTO_INCREMENT,
   `cuisine_name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`cuisineid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -148,7 +148,7 @@ CREATE TABLE `customer` (
   KEY `fk_customer_countryid_idx` (`countryid`),
   CONSTRAINT `fk_customer_countryid` FOREIGN KEY (`countryid`) REFERENCES `country` (`countryid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_customer_userid` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2002 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2003 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -181,18 +181,18 @@ CREATE TABLE `orderfood` (
   `orderid` int(11) NOT NULL AUTO_INCREMENT,
   `customerid` int(11) NOT NULL,
   `chefid` int(11) NOT NULL,
-  `cuisineid` int(11) NOT NULL,
+  `foodid` int(11) NOT NULL,
   `order_date` datetime DEFAULT NULL,
   `req_date` datetime DEFAULT NULL,
   `comment` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`orderid`),
   KEY `fk_orderfood_customerid_idx` (`customerid`),
   KEY `fk_orderfood_chefid_idx` (`chefid`),
-  KEY `fk_orderfood_cuisineid_idx` (`cuisineid`),
+  KEY `fk_orderfood_foodid_idx` (`foodid`),
   CONSTRAINT `fk_orderfood_chefid` FOREIGN KEY (`chefid`) REFERENCES `chef` (`chefid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_orderfood_cuisineid` FOREIGN KEY (`cuisineid`) REFERENCES `cuisine` (`cuisineid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_orderfood_customerid` FOREIGN KEY (`customerid`) REFERENCES `customer` (`customerid`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `fk_orderfood_customerid` FOREIGN KEY (`customerid`) REFERENCES `customer` (`customerid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_orderfood_foodid` FOREIGN KEY (`foodid`) REFERENCES `fooditem` (`foodid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -210,7 +210,7 @@ CREATE TABLE `user` (
   `lname` varchar(50) DEFAULT NULL,
   `user_type` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=98112 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=98118 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -222,4 +222,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-11-12  0:11:29
+-- Dump completed on 2017-11-18 21:46:25
