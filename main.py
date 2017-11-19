@@ -197,6 +197,9 @@ def confirmorder(foodid, chefid):
 
         models.create_order(custid, chefid, foodid, req_date, comment)
 
+        flash('Order placed.', 'success')
+        return redirect(url_for('dashboard'))
+
     return render_template('confirmorder.html', form = form,
                                                 food = food,
                                                 chef = chef)
@@ -218,6 +221,72 @@ def about():
 @app.route('/contactus/')
 def contactus():
     return render_template('contactus.html')
+
+
+@app.route('/account', methods=['GET', 'POST'])
+@app.route('/account/', methods=['GET', 'POST'])
+@is_logged_in
+def account():
+    form = forms.AccountForm(request.form)
+    form.country.choices = [(c.countryid, c.countryname) for c in models.get_all_countries()]
+    form.chefspec.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
+    form.custpref.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
+
+    # populate form with existing info
+    user = models.get_user_by_id(session['userid'])
+    chef = models.get_chef_by_id(session['chefid'])
+    cust = models.get_customer_by_id(session['custid'])
+
+    # figure out the user type
+    usertype = ""
+    aptno, street, city, state, zipcode, countryid, phoneno = (None,)*7
+    chefspec = None
+    custpref = None
+    if (chef):
+        usertype  = "chef"
+        aptno     = chef.address
+        street    = chef.street
+        city      = chef.city
+        state     = chef.state
+        zipcode   = chef.zipcode
+        countryid = chef.countryid
+        phoneno   = chef.phone_number
+        
+    elif (cust):
+        usertype  = "customer"
+        aptno     = cust.address
+        street    = cust.street
+        city      = cust.city
+        state     = cust.state
+        zipcode   = cust.zipcode
+        countryid = cust.countryid
+        phoneno   = cust.phone_number
+    elif (chef and cust):
+        usertype  = "both"
+        aptno     = chef.address
+        street    = chef.street
+        city      = chef.city
+        state     = chef.state
+        zipcode   = chef.zipcode
+        countryid = chef.countryid
+        phoneno   = chef.phone_number
+
+    form.first_name.data = user.fname
+    form.last_name.data  = user.lname
+    form.email_id.data   = user.email
+    form.password.data   = None
+    form.usertype.data   = usertype
+
+    form.apartment_no.data = aptno
+    form.street.data       = street
+    form.city.data         = city
+    form.state.data        = state
+    form.zipcode.data      = zipcode
+    form.country.data      = countryid
+    form.phone_number.data = phoneno
+
+    return render_template('account.html', form = form)
+# END account
 
 
 @app.route('/orderpage', methods=['GET', 'POST'])

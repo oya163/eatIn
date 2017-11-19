@@ -51,6 +51,13 @@ class Chef(db.Model):
 
     def get_user(self):
         return get_user_by_id(self.userid)
+
+    def get_speciality(self):
+        stmt = "SELECT * " \
+               "FROM chefspecial JOIN chef ON chefspecial.chefid = chef.chefid " \
+               "WHERE cuisineid = %s" % (str(_cuisineid))
+        # print stmt
+
 # END Chef
 
 def get_chef_by_user(_user):
@@ -223,7 +230,7 @@ def get_customer_by_user(_user):
 # END get_customer_by_user
 
 def get_customer_by_id(_custid):
-    cust = Customer.query.filter_by(customerid = _custid)
+    cust = Customer.query.filter_by(customerid = _custid).first()
     return cust
 # END get_customer_by_id
 
@@ -355,6 +362,11 @@ def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode
         customer = Customer(aptno, street, city, state, zipcode, countryid, phoneno, None, user_id)
         db.session.add(customer)
     elif (user_type == "chef"):
+        chef = Chef(aptno, street, city, state, zipcode, countryid, phoneno, None, user_id, None)
+        db.session.add(chef)
+    elif (user_type == "both"):
+        customer = Customer(aptno, street, city, state, zipcode, countryid, phoneno, None, user_id)
+        db.session.add(customer)
         chef = Chef(aptno, street, city, state, zipcode, countryid, phoneno, None, user_id, None)
         db.session.add(chef)
 
