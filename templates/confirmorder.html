@@ -2,11 +2,12 @@
 
 {% block body %}
     {% from "includes/_formhelpers.html" import render_field %}
+    <h1>Confirm Order<br/>
+    <hr/>
+    <small><div class = "container" align="center">{{ food.foodname }}</div></small></h1>
+    <br/>
 
     <div class = "container" align="center">
-     
-    <h1>Confirm Order<br/><small>{{ food.foodname }}</small></h1>
-    <br/>
     Description: {{ food.food_des }} <br/>
     Prep Time: {{ food.cook_time }} minutes <br/>
     Price: ${{ food.price }} <br/>
