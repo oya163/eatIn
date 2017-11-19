@@ -168,16 +168,38 @@ def signup():
 # END signup
 
 
-@app.route('/fooditem', methods=['GET', 'POST'])
-@app.route('/fooditem/', methods=['GET', 'POST'])
-@app.route('/fooditem/<foodid>', methods=['GET', 'POST'])
-def fooditem(foodid):
+@app.route('/fooditem', methods=['GET'])
+@app.route('/fooditem/', methods=['GET'])
+@app.route('/fooditem/<foodid>', methods=['GET'])
+@is_logged_in
+def fooditem(foodid, chefid = None):
     food = models.get_fooditem_by_id(int(foodid))
     chefs = models.get_chefs_by_food_id(foodid)
-    print food
 
     return render_template('fooditem.html', food = food,
                                             chefs = chefs)
+
+
+@app.route('/confirmorder/<foodid>/<chefid>', methods=['GET', 'POST'])
+@app.route('/confirmorder/<foodid>/<chefid>/', methods=['GET', 'POST'])
+@is_logged_in
+def confirmorder(foodid, chefid):
+    form = forms.ConfirmOrderForm(request.form)
+
+    food = models.get_fooditem_by_id(int(foodid))
+    chef = models.get_chef_by_id(int(chefid))
+
+    if (request.method == 'POST' and form.validate()):
+        custid = session['custid']
+        req_date = form.requested_date.data.strftime('%Y-%m-%d')
+        comment = form.comment.data
+        print foodid, chefid, session['custid'], req_date, comment
+
+        models.create_order(custid, chefid, foodid, req_date, comment)
+
+    return render_template('confirmorder.html', form = form,
+                                                food = food,
+                                                chef = chef)
 
 
 @app.route('/orderhistory')

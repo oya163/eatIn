@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -46,6 +48,9 @@ class Chef(db.Model):
 
     def __repr__(self):
         return '<ChefID %r>' % self.chefid
+
+    def get_user(self):
+        return get_user_by_id(self.userid)
 # END Chef
 
 def get_chef_by_user(_user):
@@ -54,7 +59,7 @@ def get_chef_by_user(_user):
 # END get_chef_by_user
 
 def get_chef_by_id(_chefid):
-    chef = Chef.query.filter_by(chefid = _chefid)
+    chef = Chef.query.filter_by(chefid = _chefid).first()
     return chef
 # END get_chef_by_id
 
@@ -320,9 +325,13 @@ def get_user_by_email(_email):
 # END get_user_by_email
 
 def get_user_by_id(_userid):
-    user = User.query.filter_by(userid = _userid)
+    user = User.query.filter_by(userid = _userid).first()
     return user
 # END get_user_by_id
+
+def get_all_users():
+    return User.query.order_by(userid).all()
+# END get_all_users
 
 def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode, countryid, phoneno, user_type):
     # create user first
@@ -361,15 +370,15 @@ class OrderFood(db.Model):
     orderid = db.Column(db.Integer, primary_key=True)
     customerid = db.Column(db.Integer, db.ForeignKey('customer.customerid'))
     chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'))
-    cuisineid = db.Column(db.Integer, db.ForeignKey('cuisine.cuisineid'))
+    foodid = db.Column(db.Integer, db.ForeignKey('fooditem.foodid'))
     order_date = db.Column(db.DateTime)
     req_date = db.Column(db.DateTime)
     comment = db.Column(db.String(300))
 
-    def __init__(self, customerid, chefid, cuisineid, order_date, req_date, comment):
+    def __init__(self, customerid, chefid, foodid, order_date, req_date, comment):
         self.customerid = customerid
         self.chefid = chefid
-        self.cuisineid = cuisineid
+        self.foodid = foodid
         self.order_date = order_date
         self.req_date = req_date
         self.comment = comment
@@ -388,6 +397,13 @@ def get_orders_by_chef_id(_chefid):
     return orders
 # END get_orders_by_chef_id
 
-def get_all_users():
-    return User.query.order_by(userid).all()
-# END get_all_users
+def create_order(_custid, _chefid, _foodid, _req_date, _comment):
+    order_date = datetime.datetime.now()
+    print order_date
+
+    order = OrderFood(_custid, _chefid, _foodid, order_date, _req_date, _comment)
+    #db.session.add(order)
+    #db.session.commit()
+
+    return 0
+# END create_order

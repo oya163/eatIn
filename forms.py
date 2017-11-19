@@ -55,6 +55,12 @@ class OrderPageForm(Form):
 # END OrderPageForm
 
 
+class ConfirmOrderForm(Form):
+    requested_date = DateField('Requested Date', format='%Y-%m-%d')
+    comment = TextAreaField('Comments', [validators.Length(min=0)])
+# END ConfirmOrderForm
+
+
 class FindMealForm(Form):
     cuisine = SelectField('Cuisine', coerce = int)
 # END FindMealForm

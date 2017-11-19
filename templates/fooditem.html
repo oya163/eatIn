@@ -18,11 +18,15 @@
         <tr>
             <th>Chef Name</th>
             <th>Country</th>
+            <th>Chef Status</th>
+            <th>Order</th>
         </tr>
         {% for chef in chefs %}
             <tr>
                 <td>{{ chef[2] + " " + chef[3] }}</td>
                 <td>{{ chef[5] }} </td>
+                <td></td>
+                <td><a href="{{ url_for('confirmorder', foodid=food.foodid, chefid=chef[1]) }}">Order now</a></td>
             </tr>
         {% endfor %}
     </table> 
