@@ -35,7 +35,7 @@ class Chef(db.Model):
     chefdbid = db.Column(db.Integer)
 
     def __init__(self, address, street, city, state, zipcode, countryid, phone_number, rating, userid, chefdbid):
-        self.address = address
+        self.address = address    # aka apt_no or whatever
         self.street = street
         self.city = city
         self.state = state
@@ -49,6 +49,40 @@ class Chef(db.Model):
     def __repr__(self):
         return '<ChefID %r>' % self.chefid
 
+    def update(self, _aptno, _street, _city, _state, _zipcode,
+               _countryid, _phoneno, _cpsec):
+        if (_aptno and _aptno != self.address and len(_aptno) > 0):
+            self.address = _aptno
+
+        if (_street and _street != self.street and len(_street) > 0):
+            self.street = _street
+
+        if (_city and _city != self.city and len(_city) > 0):
+            self.city = _city
+
+        if (_state and _state != self.state and len(_state) > 0):
+            self.state = _state
+
+        if (_zipcode and _zipcode != self.zipcode):
+            self.zipcode = _zipcode
+
+        if (_cpuntryid and _countryid != self.countryid):
+            self.countryid = _countryid
+
+        if (_phoneno and _phoneno != self.phoneno):
+            self.phoneno = _phoneno
+
+        if (_cspec):
+            cspecm = self.get_specialty_mapping(_cpsec)
+
+            if (cspecm):
+                cspecm.cuisineid = _cspec
+            else:
+                cspecm = ChefSpecial(self.chefid, _cspec)
+                db.session.add(cspecm)
+
+        return 0
+
     def get_user(self):
         return get_user_by_id(self.userid)
 
@@ -57,6 +91,8 @@ class Chef(db.Model):
         cuisine = Cuisine.query.filter_by(cuisineid = chefspec.cuisineid).first()
         return cuisine
 
+    def get_specialty_mapping(self):
+        return ChefSpecial.query.filter_by(chefid = self.chefid).first()
 # END Chef
 
 def get_chef_by_user(_user):
@@ -209,7 +245,7 @@ class Customer(db.Model):
     userid = db.Column(db.Integer, db.ForeignKey('user.userid'))
 
     def __init__(self, address, street, city, state, zipcode, countryid, phone_number, preference, userid):
-        self.address = address
+        self.address = address    # aka apt_no or whatever
         self.street = street
         self.city = city
         self.state = state
@@ -221,6 +257,34 @@ class Customer(db.Model):
 
     def __repr__(self):
         return '<CustomerID %r>' % self.customerid
+
+    def update(self, _aptno, _street, _city, _state, _zipcode,
+               _countryid, _phoneno, _pref):
+        if (_aptno and _aptno != self.address and len(_aptno) > 0):
+            self.address = _aptno
+
+        if (_street and _street != self.street and len(_street) > 0):
+            self.street = _street
+
+        if (_city and _city != self.city and len(_city) > 0):
+            self.city = _city
+
+        if (_state and _state != self.state and len(_state) > 0):
+            self.state = _state
+
+        if (_zipcode and _zipcode != self.zipcode):
+            self.zipcode = _zipcode
+
+        if (_cpuntryid and _countryid != self.countryid):
+            self.countryid = _countryid
+
+        if (_phoneno and _phoneno != self.phoneno):
+            self.phoneno = _phoneno
+
+        if (_pref and _pref != self.preference and len(_preference) > 0):
+            self.preference = _pref
+
+        return 0
 # END Customer
 
 def get_customer_by_user(_user):
@@ -324,9 +388,95 @@ class User(db.Model):
     def __repr__(self):
         return '<UserID %r>' % self.userid
 
-    def update(self, _fname, _lname, _email, passwd, user_type, aptno, street,
-               city, state, zipcode, countryid, phoneno, chefspecid, custpref):
-        # update fields if needed...
+    def update(self, _fname, _lname, _email, _passwd, _utype, _aptno, _street,
+               _city, _state, _zipcode, _countryid, _phoneno, _chefspecid, _custpref):
+
+        if (_email and _email != self.email and len(_email) > 6):
+             if (get_user_by_email(_email) == None):
+                 self.email = _email
+                 r = 1
+
+        # don't want to figure out password right now
+        if (_passwd):
+            pass
+
+        if (_fname and _fname != self.fname and len(_fname) > 0):
+            self.fname = _fname
+
+        if (_lname and _lname != self.lname and len(_lname) > 0):
+            self.lname = _lname
+
+        if (_utype == "both"):
+            # find existing chef/cust entities
+            chef = models.get_chef_by_user(self)
+            cust = models.get_customer_by_user(self)
+
+            # update existing chef entity if it already exists, otherwise make
+            # a new one
+            if (chef):
+                chef.update(_aptno, _street, _city, _state, _zipcode,
+                            _countryid, _phoneno)
+            else:
+                chef = Chef(_aptno, _street, _city, _state, _zipcode,
+                            _countryid, _phoneno, None, self.userid, None)
+                db.session.add(chef)
+
+            # same for customer
+            if (cust):
+                cust.update(_aptno, _street, _city, _state, _zipcode,
+                            _countryid, _phoneno, _custpref)
+            else:
+                cust = Customer(_aptno, _street, _city, _state, _zipcode,
+                                _countryid, _phoneno, _custpref, self.userid)
+                db.session.add(cust)
+        elif (_utype == "cust"):
+            # find existing chef/cust entities
+            chef = models.get_chef_by_user(self)
+            cust = models.get_customer_by_user(self)
+
+            # if chef exists, delete:
+            #    chefspecials, orders, chef
+            if (chef):
+                orders = get_orders_by_chef_id(chef.chefid)
+                cspec = chef.get_specialty_mapping()
+
+                for order in orders:
+                    db.session.delete(order)
+                db.session.delete(cspec)
+                db.session.delete(chef)
+
+            # now update old/make new customer
+            if (cust):
+                cust.update(_aptno, _street, _city, _state, _zipcode,
+                            _countryid, _phoneno, _custpref)
+            else:
+                cust = Customer(_aptno, _street, _city, _state, _zipcode,
+                                _countryid, _phoneno, _custpref, self.userid)
+                db.session.add(cust)
+        elif (_utype == "chef"):
+            # find existing chef/cust entities
+            chef = models.get_chef_by_user(self)
+            cust = models.get_customer_by_user(self)
+
+            # if customer exists, delete:
+            #    orders, customer
+            if (cust):
+                orders = get_orders_by_customer_id(cust.customerid)
+
+                for order in orders:
+                    db.session.delete(order)
+                db.session.delete(cust)
+
+            # now update/create chef
+            if (chef):
+                chef.update(_aptno, _street, _city, _state, _zipcode,
+                            _countryid, _phoneno)
+            else:
+                chef = Chef(_aptno, _street, _city, _state, _zipcode,
+                            _countryid, _phoneno, None, self.userid, None)
+                db.session.add(chef)
+
+        #db.session.commit()
         return 0
 # END User
 

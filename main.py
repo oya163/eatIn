@@ -247,10 +247,10 @@ def account():
         street    = form.street.data
         city      = form.city.data
         state     = form.state.data
-        zipcode   = form.zipcode.data
-        country   = form.country.data
-        phoneno   = form.phone_number.data
-        chefspec  = form.chefspec.data
+        zipcode   = int(form.zipcode.data)
+        country   = int(form.country.data)
+        phoneno   = int(form.phone_number.data)
+        chefspec  = int(form.chefspec.data)
         custpref  = form.custpref.data
 
         # update with new info if necessary
@@ -266,7 +266,6 @@ def account():
         return render_template('account.html', form = form,
                                                chef = chef,
                                                cust = cust)
-
 
     # figure out the user type and prefill fields with existing info
     # probably a better way to do this but whatever
@@ -316,9 +315,9 @@ def account():
     form.street.data       = street
     form.city.data         = city
     form.state.data        = state
-    form.zipcode.data      = zipcode
+    form.zipcode.data      = str(zipcode)
     form.country.data      = countryid
-    form.phone_number.data = phoneno
+    form.phone_number.data = str(phoneno)
 
     return render_template('account.html', form = form,
                                            chef = chef,
