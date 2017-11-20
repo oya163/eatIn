@@ -2,3 +2,4 @@ def_signup.txt
 .idea/*.*
 *.pyc
 *.swp
+config.py
