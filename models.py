@@ -188,6 +188,24 @@ def get_chefs_by_food_id(_foodid):
     return chefs
 # END get_chefs_by_food_id
 
+# returns a list of lists each in format:
+# [userid, chefid, fname, lname, countryid, countryname, cuisineid, cuisinename]
+def get_chef_details_list():
+    stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname," \
+           " country.countryid, country.countryname, cuisine.cuisineid, cuisine.cuisinename " \
+           "FROM (((chef JOIN country ON chef.countryid = country.countryid) " \
+           "  JOIN chefspecial ON chefspecial.chefid = chef.chefid) " \
+           "  JOIN cuisine ON chefspecial.cuisineid = cuisine.cuisineid) "\
+           "  JOIN user ON user.userid = chef.userid"
+
+    res = db.engine.execcute(text(stmt))
+    chefs = []
+    for r in res:
+        chef.append(r)
+
+    return chefs
+# END get_chef_details_list
+
 
 class Country(db.Model):
     __tablename__ = 'country'

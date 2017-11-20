@@ -400,7 +400,10 @@ def dashboard_order():
 @app.route('/cheflist/', methods=['GET', 'POST'])
 @is_logged_in
 def cheflist():
-    return render_template('cheflist.html')
+    # get all chefs
+    chefs = get_chef_details_list()
+
+    return render_template('cheflist.html', chefs = chefs)
 
 
 @app.route('/meallist', methods=['GET', 'POST'])
