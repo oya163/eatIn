@@ -89,8 +89,11 @@ class Chef(db.Model):
 
     def get_speciality(self):
         chefspec = ChefSpecial.query.filter_by(chefid = self.chefid).first()
-        cuisine = Cuisine.query.filter_by(cuisineid = chefspec.cuisineid).first()
-        return cuisine
+        if (chefspec != None):
+            cuisine = Cuisine.query.filter_by(cuisineid = chefspec.cuisineid).first()
+            return cuisine
+        else:
+            return None
 
     def get_specialty_mapping(self):
         return ChefSpecial.query.filter_by(chefid = self.chefid).first()
@@ -417,7 +420,7 @@ class User(db.Model):
             # a new one
             if (chef):
                 chef.update(_aptno, _street, _city, _state, _zipcode,
-                            _countryid, _phoneno)
+                            _countryid, _phoneno, _cspec)
                 print "updated old chef", chef.chefid
             else:
                 chef = Chef(_aptno, _street, _city, _state, _zipcode,
@@ -478,13 +481,13 @@ class User(db.Model):
             # now update/create chef
             if (chef):
                 chef.update(_aptno, _street, _city, _state, _zipcode,
-                            _countryid, _phoneno)
+                            _countryid, _phoneno, _cspec)
             else:
                 chef = Chef(_aptno, _street, _city, _state, _zipcode,
                             _countryid, _phoneno, None, self.userid, None)
                 db.session.add(chef)
 
-        #db.session.commit()
+        db.session.commit()
         return 0
 # END User
 

@@ -244,6 +244,7 @@ def account():
     if (request.method == 'POST'):
         print request.form
 
+        # delete chef/cust only options from the form to get through validation
         if (not chef):
             del form.chefspec
         if (not cust):
@@ -276,6 +277,8 @@ def account():
                             city, state, zipcode, country, phoneno, chefspec,
                             custpref)
 
+            update_session(user)
+
             if (r == 0):
                 flash('User details updated', 'success')
             else:
@@ -289,7 +292,6 @@ def account():
             return render_template('account.html', form = form,
                                                    chef = chef,
                                                    cust = cust)
-
 
     elif (request.method == 'GET'):
         usertype = ""
@@ -404,6 +406,24 @@ def cheflist():
 def meallist():
     return render_template('cheflist.html')
 
+
+def update_session(user):
+    user = models.get_user_by_id(session['userid'])
+    session['userid'] = user.userid
+
+    cust = models.get_customer_by_user(user)
+    chef = models.get_chef_by_user(user)
+
+    if (cust):
+        session['custid'] = cust.customerid
+    else:
+        session['custid'] = None
+
+    if (chef):
+        session['chefid'] = chef.chefid
+    else:
+        session['chefid'] = None
+# END update_session
 
 
 if __name__ == '__main__':
