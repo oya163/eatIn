@@ -50,7 +50,7 @@ class Chef(db.Model):
         return '<ChefID %r>' % self.chefid
 
     def update(self, _aptno, _street, _city, _state, _zipcode,
-               _countryid, _phoneno, _cpsec):
+               _countryid, _phoneno, _cspec):
         if (_aptno and _aptno != self.address):
             self.address = _aptno
 
@@ -74,7 +74,7 @@ class Chef(db.Model):
 
         if (_cspec):
             print "in cspec"
-            cspecm = self.get_specialty_mapping(_cpsec)
+            cspecm = self.get_specialty_mapping()
 
             if (cspecm):
                 cspecm.cuisineid = _cspec
@@ -420,7 +420,7 @@ class User(db.Model):
             # a new one
             if (chef):
                 chef.update(_aptno, _street, _city, _state, _zipcode,
-                            _countryid, _phoneno, _cspec)
+                            _countryid, _phoneno, _chefspecid)
                 print "updated old chef", chef.chefid
             else:
                 chef = Chef(_aptno, _street, _city, _state, _zipcode,
@@ -481,7 +481,7 @@ class User(db.Model):
             # now update/create chef
             if (chef):
                 chef.update(_aptno, _street, _city, _state, _zipcode,
-                            _countryid, _phoneno, _cspec)
+                            _countryid, _phoneno, _chefspecid)
             else:
                 chef = Chef(_aptno, _street, _city, _state, _zipcode,
                             _countryid, _phoneno, None, self.userid, None)

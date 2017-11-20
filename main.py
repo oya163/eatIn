@@ -397,6 +397,8 @@ def dashboard_order():
                                                    foods = [])
 
 @app.route('/cheflist', methods=['GET', 'POST'])
+@app.route('/cheflist/', methods=['GET', 'POST'])
+@is_logged_in
 def cheflist():
     return render_template('cheflist.html')
 
