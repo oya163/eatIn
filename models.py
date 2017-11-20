@@ -2,10 +2,16 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
-from main import app
+from config import *
+
+# app/db config stuff
+app = Flask(__name__)
+app.config["APPLICATION_ROOT"] = APP_ROOT
+app.config['SQLALCHEMY_DATABASE_URI'] = SQL_URI
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.secret_key = SEC_KEY
 
 db = SQLAlchemy(app)
-
 
 class Chef(db.Model):
     __tablename__ = 'chef'
@@ -37,6 +43,11 @@ class Chef(db.Model):
     def __repr__(self):
         return '<ChefID %r>' % self.chefid
 # END Chef
+
+def get_chef_by_user(_user):
+    chef = Chef.query.filter_by(userid = _user.userid).first()
+    return chef
+# END get_chef_by_user
 
 
 class ChefReachout(db.Model):
@@ -102,6 +113,11 @@ def get_country_id_by_name(_countryname):
     return country
 # END get_country_id_by_name
 
+def get_all_countries():
+    countries = Country.query.order_by(Country.countryname).all()
+    return countries
+# END get_all_countries
+
 
 class Cuisine(db.Model):
     __tablename__ = 'cuisine'
@@ -145,6 +161,11 @@ class Customer(db.Model):
     def __repr__(self):
         return '<CustomerID %r>' % self.cutomerid
 # END Customer
+
+def get_customer_by_user(_user):
+    cust = Customer.query.filter_by(userid = _user.userid).first()
+    return cust
+# END get_customer_by_user
 
 
 class FoodItem(db.Model):
@@ -212,13 +233,18 @@ def get_user_by_email(_email):
     return user
 # END get_user_by_email
 
-def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode, country, phoneno, user_type):
+def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode, countryid, phoneno, user_type):
     # create user first
+    print "creating user:", fname, lname, email, passwd, aptno, street, city, state, zipcode, countryid, phoneno, user_type
+
+    # first check if user already exists
+    u = get_user_by_email(email)
+    if (u != None):
+        return 1
+
     user = User(email, passwd, fname, lname, user_type)
     db.session.add(user)
     user_id = user.userid
-
-    countryid = get_country_id_by_name(country).countryid
 
     # now create customer/chef
     if (type == "customer"):
@@ -231,7 +257,7 @@ def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode
 
     db.session.commit()
 
-    return True
+    return 0
 # END create_user
 
 
@@ -257,3 +283,8 @@ class OrderFood(db.Model):
     def __repr__(self):
         return '<OrderID %r>' % self.orderid
 # END OrderFood
+
+def get_orders_by_customer_id(_custid):
+    order = OrderFood.query.filter_by(customerid = _custid).all()
+    return order
+# END get_orders_by_customer_id
