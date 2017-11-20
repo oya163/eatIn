@@ -230,99 +230,135 @@ def account():
     form = forms.AccountForm(request.form)
     form.country.choices = [(c.countryid, c.countryname) for c in models.get_all_countries()]
     form.chefspec.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
-    form.custpref.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
+    #form.custpref.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
 
     # populate form with existing info
     user = models.get_user_by_id(session['userid'])
     chef = models.get_chef_by_id(session['chefid'])
     cust = models.get_customer_by_id(session['custid'])
 
-    if (request.method == 'POST' and form.validate()):
-        fname     = form.first_name.data
-        lname     = form.last_name.data
-        email     = form.email_id.data
-        passwd    = sha256_crypt.encrypt(str(form.password.data))
-        user_type = form.usertype.data
-        aptno     = form.apartment_no.data
-        street    = form.street.data
-        city      = form.city.data
-        state     = form.state.data
-        zipcode   = int(form.zipcode.data)
-        country   = int(form.country.data)
-        phoneno   = int(form.phone_number.data)
-        chefspec  = int(form.chefspec.data)
-        custpref  = form.custpref.data
+    print form.first_name.data, form.last_name.data
+    print form.country.data, form.usertype.data
+    print request.method, form.validate()
 
-        # update with new info if necessary
-        r = user.update(fname, lname, email, passwd, user_type, aptno, street,
-                        city, state, zipcode, country, phoneno, chefspec,
-                        custpref)
+    if (request.method == 'POST'):
+        print request.form
 
-        if (r == 0):
-            flash('User details updated', 'success')
+        if (not chef):
+            del form.chefspec
+        if (not cust):
+            del form.custpref
+
+        if (form.validate()):
+            print "posting..."
+            fname     = form.first_name.data
+            lname     = form.last_name.data
+            email     = form.email_id.data
+            passwd    = sha256_crypt.encrypt(str(form.password.data))
+            user_type = form.usertype.data
+            aptno     = form.apartment_no.data
+            street    = form.street.data
+            city      = form.city.data
+            state     = form.state.data
+            zipcode   = int(form.zipcode.data)
+            country   = int(form.country.data)
+            phoneno   = int(form.phone_number.data)
+            chefspec  = None
+            custpref  = None
+
+            if (chef):
+                chefspec  = int(form.chefspec.data)
+            if (cust):
+                custpref  = form.custpref.data
+
+            # update with new info if necessary
+            r = user.update(fname, lname, email, passwd, user_type, aptno, street,
+                            city, state, zipcode, country, phoneno, chefspec,
+                            custpref)
+
+            if (r == 0):
+                flash('User details updated', 'success')
+            else:
+                flash('Update failed', 'danger')
+
+            return render_template('account.html', form = form,
+                                                   chef = chef,
+                                                   cust = cust)
         else:
             flash('Update failed', 'danger')
+            return render_template('account.html', form = form,
+                                                   chef = chef,
+                                                   cust = cust)
+
+
+    elif (request.method == 'GET'):
+        usertype = ""
+        aptno, street, city, state, zipcode, countryid, phoneno = (None,)*7
+        chefspec = None
+        custpref = None
+        if (chef and cust):
+            usertype  = "both"
+            aptno     = chef.address
+            street    = chef.street
+            city      = chef.city
+            state     = chef.state
+            zipcode   = chef.zipcode
+            countryid = chef.countryid
+            phoneno   = chef.phone_number
+            chefspec  = chef.get_speciality()
+            custpref  = cust.preference
+        elif (chef):
+            usertype  = "chef"
+            aptno     = chef.address
+            street    = chef.street
+            city      = chef.city
+            state     = chef.state
+            zipcode   = chef.zipcode
+            countryid = chef.countryid
+            phoneno   = chef.phone_number
+            chefspec  = chef.get_speciality()
+        elif (cust):
+            usertype  = "customer"
+            aptno     = cust.address
+            street    = cust.street
+            city      = cust.city
+            state     = cust.state
+            zipcode   = cust.zipcode
+            countryid = cust.countryid
+            phoneno   = cust.phone_number
+            custpref  = cust.preference
+
+        form.first_name.data = user.fname
+        form.last_name.data  = user.lname
+        form.email_id.data   = user.email
+        form.password.data   = None
+        form.usertype.data   = usertype
+
+        form.apartment_no.data = aptno
+        form.street.data       = street
+        form.city.data         = city
+        form.state.data        = state
+        form.zipcode.data      = str(zipcode)
+        form.country.data      = countryid
+        form.phone_number.data = str(phoneno)
+
+        form.chefspec.data     = chefspec
+        form.custpref.data     = custpref
+
+        if (not chef):
+            del form.chefspec
+        if (not cust):
+            del form.custpref
 
         return render_template('account.html', form = form,
                                                chef = chef,
                                                cust = cust)
-
-    # figure out the user type and prefill fields with existing info
-    # probably a better way to do this but whatever
-    usertype = ""
-    aptno, street, city, state, zipcode, countryid, phoneno = (None,)*7
-    chefspec = None
-    custpref = None
-    if (chef and cust):
-        usertype  = "both"
-        aptno     = chef.address
-        street    = chef.street
-        city      = chef.city
-        state     = chef.state
-        zipcode   = chef.zipcode
-        countryid = chef.countryid
-        phoneno   = chef.phone_number
-        chefspec  = chef.get_speciality()
-        custpref  = cust.preference
-    elif (chef):
-        usertype  = "chef"
-        aptno     = chef.address
-        street    = chef.street
-        city      = chef.city
-        state     = chef.state
-        zipcode   = chef.zipcode
-        countryid = chef.countryid
-        phoneno   = chef.phone_number
-        chefspec  = chef.get_speciality()
-    elif (cust):
-        usertype  = "customer"
-        aptno     = cust.address
-        street    = cust.street
-        city      = cust.city
-        state     = cust.state
-        zipcode   = cust.zipcode
-        countryid = cust.countryid
-        phoneno   = cust.phone_number
-        custpref  = cust.preference
-
-    form.first_name.data = user.fname
-    form.last_name.data  = user.lname
-    form.email_id.data   = user.email
-    form.password.data   = None
-    form.usertype.data   = usertype
-
-    form.apartment_no.data = aptno
-    form.street.data       = street
-    form.city.data         = city
-    form.state.data        = state
-    form.zipcode.data      = str(zipcode)
-    form.country.data      = countryid
-    form.phone_number.data = str(phoneno)
-
+    flash('Update failed', 'danger')
     return render_template('account.html', form = form,
                                            chef = chef,
                                            cust = cust)
 # END account
+
 
 # TODO: delete this later, using dashboard_order instead
 @app.route('/orderpage', methods=['GET', 'POST'])

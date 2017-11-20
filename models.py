@@ -51,28 +51,29 @@ class Chef(db.Model):
 
     def update(self, _aptno, _street, _city, _state, _zipcode,
                _countryid, _phoneno, _cpsec):
-        if (_aptno and _aptno != self.address and len(_aptno) > 0):
+        if (_aptno and _aptno != self.address):
             self.address = _aptno
 
-        if (_street and _street != self.street and len(_street) > 0):
+        if (_street and _street != self.street):
             self.street = _street
 
-        if (_city and _city != self.city and len(_city) > 0):
+        if (_city and _city != self.city):
             self.city = _city
 
-        if (_state and _state != self.state and len(_state) > 0):
+        if (_state and _state != self.state):
             self.state = _state
 
         if (_zipcode and _zipcode != self.zipcode):
             self.zipcode = _zipcode
 
-        if (_cpuntryid and _countryid != self.countryid):
+        if (_countryid and _countryid != self.countryid):
             self.countryid = _countryid
 
         if (_phoneno and _phoneno != self.phoneno):
             self.phoneno = _phoneno
 
         if (_cspec):
+            print "in cspec"
             cspecm = self.get_specialty_mapping(_cpsec)
 
             if (cspecm):
@@ -260,28 +261,28 @@ class Customer(db.Model):
 
     def update(self, _aptno, _street, _city, _state, _zipcode,
                _countryid, _phoneno, _pref):
-        if (_aptno and _aptno != self.address and len(_aptno) > 0):
+        if (_aptno and _aptno != self.address):
             self.address = _aptno
 
-        if (_street and _street != self.street and len(_street) > 0):
+        if (_street and _street != self.street):
             self.street = _street
 
-        if (_city and _city != self.city and len(_city) > 0):
+        if (_city and _city != self.city):
             self.city = _city
 
-        if (_state and _state != self.state and len(_state) > 0):
+        if (_state and _state != self.state):
             self.state = _state
 
         if (_zipcode and _zipcode != self.zipcode):
             self.zipcode = _zipcode
 
-        if (_cpuntryid and _countryid != self.countryid):
+        if (_countryid and _countryid != self.countryid):
             self.countryid = _countryid
 
         if (_phoneno and _phoneno != self.phoneno):
             self.phoneno = _phoneno
 
-        if (_pref and _pref != self.preference and len(_preference) > 0):
+        if (_pref and _pref != self.preference):
             self.preference = _pref
 
         return 0
@@ -394,7 +395,7 @@ class User(db.Model):
         if (_email and _email != self.email and len(_email) > 6):
              if (get_user_by_email(_email) == None):
                  self.email = _email
-                 r = 1
+                 return 1
 
         # don't want to figure out password right now
         if (_passwd):
@@ -407,32 +408,38 @@ class User(db.Model):
             self.lname = _lname
 
         if (_utype == "both"):
+            print "type = both"
             # find existing chef/cust entities
-            chef = models.get_chef_by_user(self)
-            cust = models.get_customer_by_user(self)
-
+            chef = get_chef_by_user(self)
+            cust = get_customer_by_user(self)
+            print chef, cust
             # update existing chef entity if it already exists, otherwise make
             # a new one
             if (chef):
                 chef.update(_aptno, _street, _city, _state, _zipcode,
                             _countryid, _phoneno)
+                print "updated old chef", chef.chefid
             else:
                 chef = Chef(_aptno, _street, _city, _state, _zipcode,
                             _countryid, _phoneno, None, self.userid, None)
                 db.session.add(chef)
+                print "added new chef"
 
             # same for customer
             if (cust):
                 cust.update(_aptno, _street, _city, _state, _zipcode,
                             _countryid, _phoneno, _custpref)
+                print "updated old cust", cust.customerid
             else:
                 cust = Customer(_aptno, _street, _city, _state, _zipcode,
                                 _countryid, _phoneno, _custpref, self.userid)
                 db.session.add(cust)
+                print "added new cust"
         elif (_utype == "cust"):
+            print "type = cust"
             # find existing chef/cust entities
-            chef = models.get_chef_by_user(self)
-            cust = models.get_customer_by_user(self)
+            chef = get_chef_by_user(self)
+            cust = get_customer_by_user(self)
 
             # if chef exists, delete:
             #    chefspecials, orders, chef
@@ -454,9 +461,10 @@ class User(db.Model):
                                 _countryid, _phoneno, _custpref, self.userid)
                 db.session.add(cust)
         elif (_utype == "chef"):
+            print "type = chef"
             # find existing chef/cust entities
-            chef = models.get_chef_by_user(self)
-            cust = models.get_customer_by_user(self)
+            chef = get_chef_by_user(self)
+            cust = get_customer_by_user(self)
 
             # if customer exists, delete:
             #    orders, customer

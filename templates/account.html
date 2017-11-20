@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-    {% from "includes/_formhelpers.html" import render_field %}
+    {% from "includes/_formhelpers.html" import render_field2 %}
     <h1>Account Management<br/></h1>
     <hr/>
 
@@ -10,67 +10,67 @@
             <h1><small>General Settings</small></h1>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.first_name, class_="form-control") }}
+                    {{ render_field2(form.first_name, class_="form-control") }}
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.last_name, class_="form-control") }}
+                    {{ render_field2(form.last_name, class_="form-control") }}
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.email_id, class_="form-control") }}
+                    {{ render_field2(form.email_id, class_="form-control") }}
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.password, class_="form-control") }}
+                    {{ render_field2(form.password, class_="form-control") }}
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.confirm, class_="form-control") }}
+                    {{ render_field2(form.confirm, class_="form-control") }}
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.usertype, class_="form-control") }}
+                    {{ render_field2(form.usertype, class_="form-control") }}
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.apartment_no, class_="form-control") }}
+                    {{ render_field2(form.apartment_no, class_="form-control") }}
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.street, class_="form-control") }}
+                    {{ render_field2(form.street, class_="form-control") }}
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.city, class_="form-control") }}
+                    {{ render_field2(form.city, class_="form-control") }}
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.state, class_="form-control") }}
+                    {{ render_field2(form.state, class_="form-control") }}
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.zipcode, class_="form-control") }}
+                    {{ render_field2(form.zipcode, class_="form-control") }}
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.country, class_="form-control") }}
+                    {{ render_field2(form.country, class_="form-control") }}
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.phone_number, class_="form-control") }}
+                    {{ render_field2(form.phone_number, class_="form-control") }}
                 </div>
             </div>
 
@@ -79,7 +79,7 @@
             <h1><small>Chef Settings</small></h1>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.chefspec, class_="form-control") }}
+                    {{ render_field2(form.chefspec, class_="form-control") }}
                 </div>
             </div>
             {% endif %}
@@ -89,7 +89,7 @@
             <h1><small>Customer Settings</small></h1>
             <div class="form-group">
                 <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.chefspec, class_="form-control") }}
+                    {{ render_field2(form.custpref, class_="form-control") }}
                 </div>
             </div>
             {% endif %}

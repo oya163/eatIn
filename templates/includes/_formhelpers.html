@@ -7,3 +7,9 @@
         {% endfor %}
     {% endif %}
 {% endmacro %}
+
+{% macro render_field2(field) %}
+    {{ field.label }}
+    {{ field(**kwargs)|safe }}
+{% endmacro %}
+
