@@ -198,7 +198,7 @@ def get_chef_details_list():
            "  JOIN cuisine ON chefspecial.cuisineid = cuisine.cuisineid) "\
            "  JOIN user ON user.userid = chef.userid"
 
-    res = db.engine.execcute(text(stmt))
+    res = db.engine.execute(text(stmt))
     chefs = []
     for r in res:
         chef.append(r)
@@ -434,6 +434,7 @@ class User(db.Model):
             chef = get_chef_by_user(self)
             cust = get_customer_by_user(self)
             print chef, cust
+
             # update existing chef entity if it already exists, otherwise make
             # a new one
             if (chef):
@@ -456,22 +457,14 @@ class User(db.Model):
                                 _countryid, _phoneno, _custpref, self.userid)
                 db.session.add(cust)
                 print "added new cust"
-        elif (_utype == "cust"):
+        elif (_utype == "customer"):
             print "type = cust"
             # find existing chef/cust entities
             chef = get_chef_by_user(self)
             cust = get_customer_by_user(self)
 
-            # if chef exists, delete:
-            #    chefspecials, orders, chef
             if (chef):
-                orders = get_orders_by_chef_id(chef.chefid)
-                cspec = chef.get_specialty_mapping()
-
-                for order in orders:
-                    db.session.delete(order)
-                db.session.delete(cspec)
-                db.session.delete(chef)
+                db.engine.execute(text("CALL delete_chef(%s)" % (chef.chefid)))
 
             # now update old/make new customer
             if (cust):
@@ -482,19 +475,11 @@ class User(db.Model):
                                 _countryid, _phoneno, _custpref, self.userid)
                 db.session.add(cust)
         elif (_utype == "chef"):
-            print "type = chef"
-            # find existing chef/cust entities
             chef = get_chef_by_user(self)
             cust = get_customer_by_user(self)
 
-            # if customer exists, delete:
-            #    orders, customer
             if (cust):
-                orders = get_orders_by_customer_id(cust.customerid)
-
-                for order in orders:
-                    db.session.delete(order)
-                db.session.delete(cust)
+                db.engine.execute(text("CALL delete_customer(%s)" % (cust.customerid)))
 
             # now update/create chef
             if (chef):
