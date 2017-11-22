@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'layout.html' %}
 
 {% block body %}
@@ -21,3 +22,57 @@
         {% endfor %}
     </table>
 {% endblock %}
+=======
+{% extends 'layout.html' %}
+
+{% block body %}
+    <h1>Dashboard<br/><small>Welcome {{ session.first_name }}</small></h1>
+    <hr>
+
+    {% if session.custid %}
+    You are the customer of the following orders:
+    <table class="table table-striped">
+        <tr>
+            <th>#</th>
+            <th>Food Name</th>
+            <th>Prepared By</th>
+            <th>Ordered Date</th>
+            <th>Requested Date</th>
+            <th>Status</th>
+        </tr>
+        {% for order in orders_as_cust %}
+            <tr>
+                <td>{{ order.orderid }}</td>
+                <td>{{ order.get_food().foodname }}</td>
+                <td>{{ order.get_chef().get_user().fname + " " + order.get_chef().get_user().lname }}</td>
+                <td>{{ order.order_date }}</td>
+                <td>{{ order.req_date }}</td>
+                <td></td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if session.chefid %}
+    You are the chef of the following orders:
+    <table class="table table-striped">
+        <tr>
+            <th>#</th>
+            <th>Food Name</th>
+            <th>Customer</th>
+            <th>Ordered Date</th>
+            <th>Status</th>
+        </tr>
+        {% for order in orders_as_chef %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+{% endblock %}
+>>>>>>> 842c60f56ef293d55d26be494ea9afdc0095ce07
