@@ -46,34 +46,14 @@ def index():
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # Get form fields
         email = request.form['username']
         password_candidate = request.form['password']
 
         user = models.get_user_by_email(email)
 
         if (user != None):
-            # Compare passwords
             if sha256_crypt.verify(password_candidate, user.password):
-                # Passed
-                session['logged_in'] = True
-                session['username'] = email
-                session['first_name'] = user.fname
-                session['userid'] = user.userid
-
-                # set customer and chef ids for convenience
-                cust = models.get_customer_by_user(user)
-                chef = models.get_chef_by_user(user)
-
-                if (cust):
-                    session['custid'] = cust.customerid
-                else:
-                    session['custid'] = None
-
-                if (chef):
-                    session['chefid'] = chef.chefid
-                else:
-                    session['chefid'] = None
+                update_session(user)
 
                 flash('You are now logged in', 'success')
                 return redirect(url_for('dashboard'))
@@ -261,9 +241,9 @@ def account():
             street    = form.street.data
             city      = form.city.data
             state     = form.state.data
-            zipcode   = int(form.zipcode.data)
-            country   = int(form.country.data)
-            phoneno   = int(form.phone_number.data)
+            zipcode   = int(form.zipcode.data) if form.zipcode.data else None
+            country   = int(form.country.data) if form.country.data else None
+            phoneno   = int(form.phone_number.data) if form.phone_number.data else None
             chefspec  = None
             custpref  = None
 
@@ -396,6 +376,20 @@ def dashboard_order():
     return render_template('dashboard_order.html', form = form,
                                                    foods = [])
 
+@app.route('/statistics', methods=['GET'])
+@app.route('/statistics/', methods=['GET'])
+@is_logged_in
+def statistics():
+    chefs = models.get_most_popular_chefs()
+    foods = models.get_most_popular_foods()
+
+    print chefs
+    print foods
+
+    return render_template('statistics.html', chefs = chefs,
+                                              foods = foods)
+
+
 @app.route('/cheflist', methods=['GET', 'POST'])
 @app.route('/cheflist/', methods=['GET', 'POST'])
 @is_logged_in
@@ -413,6 +407,11 @@ def meallist():
 
 
 def update_session(user):
+    session['logged_in'] = True
+    session['username'] = user.email
+    session['first_name'] = user.fname
+    session['userid'] = user.userid
+
     user = models.get_user_by_id(session['userid'])
     session['userid'] = user.userid
 

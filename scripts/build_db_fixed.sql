@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `eatin` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `eatin`;
 -- MySQL dump 10.13  Distrib 5.7.20, for Linux (x86_64)
 --
 -- Host: localhost    Database: eatin
@@ -39,7 +41,22 @@ CREATE TABLE `chef` (
   KEY `fk_chef_coutnryid_idx` (`countryid`),
   CONSTRAINT `fk_chef_coutnryid` FOREIGN KEY (`countryid`) REFERENCES `country` (`countryid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_chef_userid` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=98053 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=98054 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `chef_cnt`
+--
+
+DROP TABLE IF EXISTS `chef_cnt`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `chef_cnt` (
+  `chefid` int(11) NOT NULL,
+  `counter` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`chefid`),
+  CONSTRAINT `fk_chef_cnt_chefid` FOREIGN KEY (`chefid`) REFERENCES `chef` (`chefid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -169,6 +186,21 @@ CREATE TABLE `fooditem` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `fooditem_cnt`
+--
+
+DROP TABLE IF EXISTS `fooditem_cnt`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `fooditem_cnt` (
+  `foodid` int(11) NOT NULL,
+  `counter` int(11) DEFAULT NULL,
+  PRIMARY KEY (`foodid`),
+  CONSTRAINT `fk_fooditem_cnt_foodid` FOREIGN KEY (`foodid`) REFERENCES `fooditem` (`foodid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `orderfood`
 --
 
@@ -190,8 +222,40 @@ CREATE TABLE `orderfood` (
   CONSTRAINT `fk_orderfood_chefid` FOREIGN KEY (`chefid`) REFERENCES `chef` (`chefid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_orderfood_customerid` FOREIGN KEY (`customerid`) REFERENCES `customer` (`customerid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_orderfood_foodid` FOREIGN KEY (`foodid`) REFERENCES `fooditem` (`foodid`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `eatin`.`orderfood_AFTER_INSERT` AFTER INSERT ON `orderfood` FOR EACH ROW
+BEGIN
+  IF EXISTS(SELECT * FROM fooditem_cnt WHERE fooditem_cnt.foodid = NEW.foodid) THEN
+    UPDATE fooditem_cnt SET counter = (counter + 1)
+    WHERE foodid = NEW.foodid;
+  ELSE
+    INSERT INTO fooditem_cnt (foodid, counter)
+	VALUES(NEW.foodid, 1);
+  END IF;
+  
+  IF EXISTS(SELECT * FROM chef_cnt WHERE chef_cnt.chefid = NEW.chefid) THEN
+    UPDATE chef_cnt SET counter = (counter + 1)
+    WHERE chefid = NEW.chefid;
+  ELSE
+    INSERT INTO chef_cnt (chefid, counter)
+	VALUES(NEW.chefid, 1);
+  END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `user`
@@ -323,4 +387,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-11-21 19:38:44
+-- Dump completed on 2017-11-21 22:53:33

@@ -69,8 +69,8 @@ class Chef(db.Model):
         if (_countryid and _countryid != self.countryid):
             self.countryid = _countryid
 
-        if (_phoneno and _phoneno != self.phoneno):
-            self.phoneno = _phoneno
+        if (_phoneno and _phoneno != self.phone_number):
+            self.phone_number = _phoneno
 
         if (_cspec):
             print "in cspec"
@@ -205,7 +205,7 @@ def get_chef_details_list():
     res = db.engine.execute(text(stmt))
     chefs = []
     for r in res:
-        chef.append(r)
+        chefs.append(r)
 
     return chefs
 # END get_chef_details_list
@@ -286,29 +286,14 @@ class Customer(db.Model):
 
     def update(self, _aptno, _street, _city, _state, _zipcode,
                _countryid, _phoneno, _pref):
-        if (_aptno and _aptno != self.address):
-            self.address = _aptno
-
-        if (_street and _street != self.street):
-            self.street = _street
-
-        if (_city and _city != self.city):
-            self.city = _city
-
-        if (_state and _state != self.state):
-            self.state = _state
-
-        if (_zipcode and _zipcode != self.zipcode):
-            self.zipcode = _zipcode
-
-        if (_countryid and _countryid != self.countryid):
-            self.countryid = _countryid
-
-        if (_phoneno and _phoneno != self.phoneno):
-            self.phoneno = _phoneno
-
-        if (_pref and _pref != self.preference):
-            self.preference = _pref
+        self.address = _aptno
+        self.street = _street
+        self.city = _city
+        self.state = _state
+        self.zipcode = _zipcode
+        self.countryid = _countryid
+        self.phone_number = _phoneno
+        self.preference = _pref
 
         return 0
 # END Customer
@@ -597,3 +582,69 @@ def create_order(_custid, _chefid, _foodid, _req_date, _comment):
 
     return 0
 # END create_order
+
+
+# Counter tables (read only)
+class FoodItemCnt(db.Model):
+    __tablename__ = 'fooditem_cnt'
+
+    foodid = db.Column(db.Integer, db.ForeignKey('fooditem.foodid'), primary_key = True)
+    cnt = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '<FoodID %r>' % self.foodid
+# END FoodItemCnt
+
+# return format is: [foodid, name, cook time, rating, price, counter] 
+def get_most_popular_foods():
+    stmt = "SELECT fooditem.foodid, fooditem.foodname, fooditem.cook_time, " \
+           "  fooditem.food_rating, fooditem.price, fooditem_cnt.counter " \
+           "FROM fooditem_cnt JOIN fooditem ON fooditem.foodid = fooditem_cnt.foodid " \
+           "ORDER BY counter " \
+           "LIMIT 100"
+    
+    res = db.engine.execute(text(stmt))
+    foods = []
+    for r in res:
+        foods.append(r)
+
+    return foods
+# END get_most_popular_chefs
+
+
+class ChefCnt(db.Model):
+    __tablename__ = 'chef_cnt'
+
+    chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'), primary_key = True)
+    cnt = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '<ChefID %r>' % self.chefid
+# END ChefCnt
+
+# return format is: [userid, chefid, fname, lname, countryid, countryname, cuisineid,
+#                    cuisine_name, counter]
+def get_most_popular_chefs():
+    stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname," \
+           " country.countryid, country.countryname, cuisine.cuisineid, cuisine.cuisine_name, " \
+           " chef_cnt.counter " \
+           "FROM ((((chef JOIN country ON chef.countryid = country.countryid) " \
+           "  JOIN chefspecial ON chefspecial.chefid = chef.chefid) " \
+           "  JOIN cuisine ON chefspecial.cuisineid = cuisine.cuisineid) " \
+           "  JOIN user ON user.userid = chef.userid) " \
+           "  JOIN chef_cnt ON chef_cnt.chefid = chef.chefid " \
+           "ORDER BY counter " \
+           "LIMIT 100"
+
+    #stmt = "SELECT  " \
+    #       "FROM (((chef_cnt JOIN chef ON chef.chefid = chef_cnt.chefid " \
+    #       "ORDER BY counter " \
+    #       "LIMIT 100"
+
+    res = db.engine.execute(text(stmt))
+    chefs = []
+    for r in res:
+        chefs.append(r)
+
+    return chefs
+# END get_most_popular_chefs
