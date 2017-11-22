@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,3 +44,42 @@
     </div>
 </body>
 </html>
+=======
+{% extends 'layout.html' %}
+
+{% block body %}
+    {% from "includes/_formhelpers.html" import render_field %}
+    <h1>Food Item<br/></h1>
+    <hr/>
+
+    <div class = "container" align="center">
+       
+    <h1><small>{{ food.foodname }}</small></h1>
+    <br/>
+    Description: {{ food.food_des }} <br/>
+    Prep Time: {{ food.cook_time }} minutes <br/>
+    Price: ${{ food.price }} <br/>
+    Rating: {{ food.food_rating }}/5.0 <br/>
+
+    <br/>
+    Pick a chef to complete order
+    <table class="table table-striped">
+        <tr>
+            <th>Chef Name</th>
+            <th>Country</th>
+            <th>Chef Status</th>
+            <th>Order</th>
+        </tr>
+        {% for chef in chefs %}
+            <tr>
+                <td>{{ chef[2] + " " + chef[3] }}</td>
+                <td>{{ chef[5] }} </td>
+                <td></td>
+                <td><a href="{{ url_for('confirmorder', foodid=food.foodid, chefid=chef[1]) }}">Order now</a></td>
+            </tr>
+        {% endfor %}
+    </table> 
+
+    </div>
+{% endblock %}
+>>>>>>> 842c60f56ef293d55d26be494ea9afdc0095ce07

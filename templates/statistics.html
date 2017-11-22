@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    {% from "includes/_formhelpers.html" import render_field %}
+
+    <h1>Statistics<br/></h1>
+    <hr>
+
+    <div class = "container" align="center">
+
+    <h1><small>Foods</small></h1>
+    <table class="table table-striped">
+        <tr>
+            <th>#</th>
+            <th>Food Name</th>
+            <th>Prep Time (mins)</th>
+            <th>Price</th>
+            <th>Rating</th>
+            <th>Orders</th>
+        </tr>
+        {% for food in foods %}
+            <tr>
+                <td>{{ food[0] }}</td>
+                <td><a href="{{ url_for('fooditem', foodid=food[0]) }}">{{ food[1] }}</a></td>
+                <td>{{ food[2] }}</td>
+                <td>{{ food[4] }}</td>
+                <td>{{ food[3] }}</td>
+                <td>{{ food[5] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br/>
+
+    <h1><small>Chefs</small></h1>
+    <table class="table table-striped">
+        <tr>
+            <th>Chef Name</th>
+            <th>Speciality</th>
+            <th>Country</th>
+            <th>Orders</th>
+        </tr>
+        {% for chef in chefs %}
+            <tr>
+                <td>{{ chef[2] + " " + chef[3] }}</td>
+                <td>{{ chef[7] }}</td>
+                <td>{{ chef[5] }}</td>
+                <td>{{ chef[8] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    </div>
+{% endblock %}

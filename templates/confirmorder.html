@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    {% from "includes/_formhelpers.html" import render_field %}
+    <h1>Confirm Order<br/>
+    <hr/>
+    <small><div class = "container" align="center">{{ food.foodname }}</div></small></h1>
+    <br/>
+
+    <div class = "container" align="center">
+    Description: {{ food.food_des }} <br/>
+    Prep Time: {{ food.cook_time }} minutes <br/>
+    Price: ${{ food.price }} <br/>
+    Rating: {{ food.food_rating }}/5.0 <br/>
+
+    <h1><small>Prepared by: {{ chef.get_user().fname + " " + chef.get_user().lname }}</small></h1>
+
+    <form method="POST" action="">
+        <div class="form-group">
+            <div class="input-group" aria-describedby="basic-addon3">
+                {{ render_field(form.requested_date, class_="form-control datepicker") }}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="input-group" aria-describedby="basic-addon3">
+                {{ render_field(form.comment, class_="form-control") }}
+            </div>
+        </div>
+        <p><input type="submit" class="btn btn-primary" value="Confirm Order"> </p>
+    </form>
+
+    </div>
+{% endblock %}

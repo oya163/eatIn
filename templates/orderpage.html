@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,3 +49,21 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>
+=======
+{% include '/includes/_navbar.html' %}
+{% extends 'layout.html' %}
+
+{% block body %}
+    {% from "includes/_formhelpers.html" import render_field %}
+    <div class = "bg">
+        <form method="post" action="">
+            <div class="form-group">
+                <div class="input-group" aria-describedby="basic-addon3">
+                    {{ render_field(form.cuisine, class_="form-control") }}
+                </div>
+            </div>
+            <p><input type="submit" class="btn btn-primary" value="Submit"> </p>
+        </form>
+    </div>
+{% endblock %}
+>>>>>>> 842c60f56ef293d55d26be494ea9afdc0095ce07
