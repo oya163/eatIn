@@ -172,12 +172,14 @@ def get_chefs_by_cuisine_id(_cuisineid):
 
 # return format is: [userid, chefid, fname, lname, countryid, countryname]
 def get_chefs_by_food_id(_foodid):
-    stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname, country.countryid, country.countryname " \
-           "FROM (((chefspecial JOIN chef ON chefspecial.chefid = chef.chefid) " \
-           "  JOIN cuisineitem ON cuisineitem.cuisineid = chefspecial.cuisineid) " \
-           "  JOIN user ON user.userid = chef.userid) " \
-           "  JOIN country ON chef.countryid = country.countryid " \
-           "WHERE cuisineitem.foodid = %s" % (_foodid)
+    stmt = "CALL get_chefs_by_food_id(%s)" % (_foodid)
+
+    #stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname, country.countryid, country.countryname " \
+    #       "FROM (((chefspecial JOIN chef ON chefspecial.chefid = chef.chefid) " \
+    #       "  JOIN cuisineitem ON cuisineitem.cuisineid = chefspecial.cuisineid) " \
+    #       "  JOIN user ON user.userid = chef.userid) " \
+    #       "  JOIN country ON chef.countryid = country.countryid " \
+    #       "WHERE cuisineitem.foodid = %s" % (_foodid)
     # print stmt
 
     res = db.engine.execute(text(stmt))
@@ -188,15 +190,17 @@ def get_chefs_by_food_id(_foodid):
     return chefs
 # END get_chefs_by_food_id
 
-# returns a list of lists each in format:
+# return format is:
 # [userid, chefid, fname, lname, countryid, countryname, cuisineid, cuisinename]
 def get_chef_details_list():
-    stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname," \
-           " country.countryid, country.countryname, cuisine.cuisineid, cuisine.cuisinename " \
-           "FROM (((chef JOIN country ON chef.countryid = country.countryid) " \
-           "  JOIN chefspecial ON chefspecial.chefid = chef.chefid) " \
-           "  JOIN cuisine ON chefspecial.cuisineid = cuisine.cuisineid) "\
-           "  JOIN user ON user.userid = chef.userid"
+    stmt = "CALL get_all_chefs_details()"
+
+    #stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname," \
+    #       " country.countryid, country.countryname, cuisine.cuisineid, cuisine.cuisine_name " \
+    #       "FROM (((chef JOIN country ON chef.countryid = country.countryid) " \
+    #       "  JOIN chefspecial ON chefspecial.chefid = chef.chefid) " \
+    #       "  JOIN cuisine ON chefspecial.cuisineid = cuisine.cuisineid) "\
+    #       "  JOIN user ON user.userid = chef.userid"
 
     res = db.engine.execute(text(stmt))
     chefs = []
