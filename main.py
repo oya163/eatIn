@@ -376,18 +376,22 @@ def dashboard_order():
     return render_template('dashboard_order.html', form = form,
                                                    foods = [])
 
+
 @app.route('/statistics', methods=['GET'])
 @app.route('/statistics/', methods=['GET'])
 @is_logged_in
 def statistics():
     chefs = models.get_most_popular_chefs()
     foods = models.get_most_popular_foods()
+    cuisines = models.get_most_popular_cuisines()
 
     print chefs
     print foods
+    print cuisines
 
     return render_template('statistics.html', chefs = chefs,
-                                              foods = foods)
+                                              foods = foods,
+                                              cuisines = cuisines)
 
 
 @app.route('/cheflist', methods=['GET', 'POST'])

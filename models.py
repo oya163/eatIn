@@ -586,7 +586,7 @@ class FoodItemCnt(db.Model):
     __tablename__ = 'fooditem_cnt'
 
     foodid = db.Column(db.Integer, db.ForeignKey('fooditem.foodid'), primary_key = True)
-    cnt = db.Column(db.Integer)
+    counter = db.Column(db.Integer)
 
     def __repr__(self):
         return '<FoodID %r>' % self.foodid
@@ -616,7 +616,7 @@ class ChefCnt(db.Model):
     __tablename__ = 'chef_cnt'
 
     chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'), primary_key = True)
-    cnt = db.Column(db.Integer)
+    counter = db.Column(db.Integer)
 
     def __repr__(self):
         return '<ChefID %r>' % self.chefid
@@ -651,3 +651,27 @@ def get_most_popular_chefs():
 
     return chefs
 # END get_most_popular_chefs
+
+
+class CuisineCnt(db.Model):
+    __tablename__ = 'cuisine_cnt'
+
+    cuisineid = db.Column(db.Integer, db.ForeignKey('cuisine.cuisineid'), primary_key = True)
+    counter = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '<CuisineID %r>' % self.cuisineid
+# END CuisineCnt
+
+# return format is: [cuisineid, cuisine_name, counter]
+def get_most_popular_cuisines():
+    LIM = 100
+    stmt = "CALL get_most_popular_cuisines(%d)" % (LIM)
+
+    res = db.engine.execute(text(stmt))
+    cuisines = []
+    for r in res:
+        cuisines.append(r)
+
+    return cuisines
+# END get_most_popular_cuisines
