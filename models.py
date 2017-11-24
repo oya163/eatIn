@@ -160,7 +160,6 @@ def get_chefs_by_cuisine_id(_cuisineid):
     stmt = "SELECT * " \
            "FROM chefspecial JOIN chef ON chefspecial.chefid = chef.chefid " \
            "WHERE cuisineid = %s" % (str(_cuisineid))
-    # print stmt
 
     res = db.engine.execute(text(stmt))
     chefs = []
@@ -180,7 +179,6 @@ def get_chefs_by_food_id(_foodid):
     #       "  JOIN user ON user.userid = chef.userid) " \
     #       "  JOIN country ON chef.countryid = country.countryid " \
     #       "WHERE cuisineitem.foodid = %s" % (_foodid)
-    # print stmt
 
     res = db.engine.execute(text(stmt))
     chefs = []
@@ -368,7 +366,6 @@ def get_fooditems_by_cuisine_id(_cuisineid):
     stmt = "SELECT * " \
            "FROM cuisineitem JOIN fooditem ON cuisineitem.foodid = fooditem.foodid " \
            "WHERE cuisineid = %s" % (str(_cuisineid))
-    # print stmt
 
     res = db.engine.execute(text(stmt))
     foods = []
@@ -597,11 +594,14 @@ class FoodItemCnt(db.Model):
 
 # return format is: [foodid, name, cook time, rating, price, counter] 
 def get_most_popular_foods():
-    stmt = "SELECT fooditem.foodid, fooditem.foodname, fooditem.cook_time, " \
-           "  fooditem.food_rating, fooditem.price, fooditem_cnt.counter " \
-           "FROM fooditem_cnt JOIN fooditem ON fooditem.foodid = fooditem_cnt.foodid " \
-           "ORDER BY counter " \
-           "LIMIT 100"
+    LIM = 100
+    stmt = "CALL get_most_popular_foods(%d)" % (LIM)
+
+    #stmt = "SELECT fooditem.foodid, fooditem.foodname, fooditem.cook_time, " \
+    #       "  fooditem.food_rating, fooditem.price, fooditem_cnt.counter " \
+    #       "FROM fooditem_cnt JOIN fooditem ON fooditem.foodid = fooditem_cnt.foodid " \
+    #       "ORDER BY counter " \
+    #       "LIMIT 100"
     
     res = db.engine.execute(text(stmt))
     foods = []
@@ -625,16 +625,19 @@ class ChefCnt(db.Model):
 # return format is: [userid, chefid, fname, lname, countryid, countryname, cuisineid,
 #                    cuisine_name, counter]
 def get_most_popular_chefs():
-    stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname," \
-           " country.countryid, country.countryname, cuisine.cuisineid, cuisine.cuisine_name, " \
-           " chef_cnt.counter " \
-           "FROM ((((chef JOIN country ON chef.countryid = country.countryid) " \
-           "  JOIN chefspecial ON chefspecial.chefid = chef.chefid) " \
-           "  JOIN cuisine ON chefspecial.cuisineid = cuisine.cuisineid) " \
-           "  JOIN user ON user.userid = chef.userid) " \
-           "  JOIN chef_cnt ON chef_cnt.chefid = chef.chefid " \
-           "ORDER BY counter " \
-           "LIMIT 100"
+    LIM = 100
+    stmt = "CALL get_most_popular_chefs(%d)" % (LIM)
+
+    #stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname," \
+    #       " country.countryid, country.countryname, cuisine.cuisineid, cuisine.cuisine_name, " \
+    #       " chef_cnt.counter " \
+    #       "FROM ((((chef JOIN country ON chef.countryid = country.countryid) " \
+    #       "  JOIN chefspecial ON chefspecial.chefid = chef.chefid) " \
+    #       "  JOIN cuisine ON chefspecial.cuisineid = cuisine.cuisineid) " \
+    #       "  JOIN user ON user.userid = chef.userid) " \
+    #       "  JOIN chef_cnt ON chef_cnt.chefid = chef.chefid " \
+    #       "ORDER BY counter " \
+    #       "LIMIT 100"
 
     #stmt = "SELECT  " \
     #       "FROM (((chef_cnt JOIN chef ON chef.chefid = chef_cnt.chefid " \
