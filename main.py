@@ -106,7 +106,7 @@ def dashboard():
         _orders_as_cust = models.get_orders_by_customer_id(session['custid'])
 
     if (session['chefid']):
-        _orders_as_chef = models.get_orders_by_customer_id(session['chefid'])
+        _orders_as_chef = models.get_orders_by_chef_id(session['chefid'])
 
     return render_template('dashboard.html',
                            orders_as_cust = _orders_as_cust,

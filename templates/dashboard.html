@@ -36,14 +36,16 @@
             <th>Food Name</th>
             <th>Customer</th>
             <th>Ordered Date</th>
+            <th>Due Date</th>
             <th>Status</th>
         </tr>
         {% for order in orders_as_chef %}
             <tr>
-                <td>{{ order.id }}</td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{ order.orderid }}</td>
+                <td>{{ order.get_food().foodname }}</td>
+                <td>{{ order.get_customer().get_user().fname + " " + order.get_customer().get_user().lname }}</td>
+                <td>{{ order.order_date }}</td>
+                <td>{{ order.req_date }}</td>
                 <td></td>
             </tr>
         {% endfor %}

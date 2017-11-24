@@ -294,6 +294,9 @@ class Customer(db.Model):
         self.preference = _pref
 
         return 0
+
+    def get_user(self):
+        return get_user_by_id(self.userid)
 # END Customer
 
 def get_customer_by_user(_user):
@@ -494,7 +497,8 @@ def get_all_users():
     return User.query.order_by(userid).all()
 # END get_all_users
 
-def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode, countryid, phoneno, user_type):
+def create_user(fname, lname, email, passwd, aptno, street, city, state,
+                zipcode, countryid, phoneno, user_type):
     # create user first
     print "creating user:", fname, lname, email, passwd, aptno, street, city, state, zipcode, countryid, phoneno, user_type
 
@@ -557,6 +561,9 @@ class OrderFood(db.Model):
 
     def get_chef(self):
         return get_chef_by_id(self.chefid)
+
+    def get_customer(self):
+        return get_customer_by_id(self.customerid)
 # END OrderFood
 
 def get_orders_by_customer_id(_custid):
