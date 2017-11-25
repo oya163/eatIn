@@ -19,6 +19,7 @@ app.secret_key = SEC_KEY
 
 db = SQLAlchemy(app)
 
+
 class Chef(db.Model):
     __tablename__ = 'chef'
 
@@ -35,7 +36,7 @@ class Chef(db.Model):
     chefdbid = db.Column(db.Integer)
 
     def __init__(self, address, street, city, state, zipcode, countryid, phone_number, rating, userid, chefdbid):
-        self.address = address    # aka apt_no or whatever
+        self.address = address  # aka apt_no or whatever
         self.street = street
         self.city = city
         self.state = state
@@ -88,29 +89,37 @@ class Chef(db.Model):
         return get_user_by_id(self.userid)
 
     def get_speciality(self):
-        chefspec = ChefSpecial.query.filter_by(chefid = self.chefid).first()
+        chefspec = ChefSpecial.query.filter_by(chefid=self.chefid).first()
         if (chefspec != None):
-            cuisine = Cuisine.query.filter_by(cuisineid = chefspec.cuisineid).first()
+            cuisine = Cuisine.query.filter_by(cuisineid=chefspec.cuisineid).first()
             return cuisine
         else:
             return None
 
     def get_specialty_mapping(self):
-        return ChefSpecial.query.filter_by(chefid = self.chefid).first()
+        return ChefSpecial.query.filter_by(chefid=self.chefid).first()
+
+
 # END Chef
 
 def get_chef_by_user(_user):
-    chef = Chef.query.filter_by(userid = _user.userid).first()
+    chef = Chef.query.filter_by(userid=_user.userid).first()
     return chef
+
+
 # END get_chef_by_user
 
 def get_chef_by_id(_chefid):
-    chef = Chef.query.filter_by(chefid = _chefid).first()
+    chef = Chef.query.filter_by(chefid=_chefid).first()
     return chef
+
+
 # END get_chef_by_id
 
 def get_all_chefs():
     return Chef.query.order_by(Chef.chefid).all()
+
+
 # END get_all_chefs
 
 
@@ -128,6 +137,8 @@ class ChefReachout(db.Model):
 
     def __repr__(self):
         return '<ChefID %r City %s Miles %r>' % (self.chefid, self.city, self.miles)
+
+
 # END ChefReachout
 
 
@@ -143,17 +154,21 @@ class ChefSpecial(db.Model):
 
     def __repr__(self):
         return '<ChefID %r CuisineID %r>' % (self.chefid, self.cuisineid)
+
+
 # END ChefSpecial
 
 def get_chef_specials_by_chef_id(_chefid):
-    cspecs = ChefSpecial.query.filter_by(chefid = _chefid).all()
+    cspecs = ChefSpecial.query.filter_by(chefid=_chefid).all()
 
     cuisines = []
     for cspec in cspecs:
-        cuisine = Cuisine.query.filter_by(cuisineid = cspec.cuisineid).first()
+        cuisine = Cuisine.query.filter_by(cuisineid=cspec.cuisineid).first()
         cuisines.append(cuisine)
 
     return cuisines
+
+
 # END get_chef_specials_by_chef_id
 
 def get_chefs_by_cuisine_id(_cuisineid):
@@ -168,13 +183,15 @@ def get_chefs_by_cuisine_id(_cuisineid):
         chefs.append(r)
 
     return chefs
+
+
 # END get_chefs_by_cuisine_id
 
 # return format is: [userid, chefid, fname, lname, countryid, countryname]
 def get_chefs_by_food_id(_foodid):
     stmt = "CALL get_chefs_by_food_id(%s)" % (_foodid)
 
-    #stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname, country.countryid, country.countryname " \
+    # stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname, country.countryid, country.countryname " \
     #       "FROM (((chefspecial JOIN chef ON chefspecial.chefid = chef.chefid) " \
     #       "  JOIN cuisineitem ON cuisineitem.cuisineid = chefspecial.cuisineid) " \
     #       "  JOIN user ON user.userid = chef.userid) " \
@@ -188,6 +205,8 @@ def get_chefs_by_food_id(_foodid):
         chefs.append(r)
 
     return chefs
+
+
 # END get_chefs_by_food_id
 
 # return format is:
@@ -195,7 +214,7 @@ def get_chefs_by_food_id(_foodid):
 def get_chef_details_list():
     stmt = "CALL get_all_chefs_details()"
 
-    #stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname," \
+    # stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname," \
     #       " country.countryid, country.countryname, cuisine.cuisineid, cuisine.cuisine_name " \
     #       "FROM (((chef JOIN country ON chef.countryid = country.countryid) " \
     #       "  JOIN chefspecial ON chefspecial.chefid = chef.chefid) " \
@@ -208,6 +227,8 @@ def get_chef_details_list():
         chefs.append(r)
 
     return chefs
+
+
 # END get_chef_details_list
 
 
@@ -224,16 +245,22 @@ class Country(db.Model):
 
     def __repr__(self):
         return '<CountryID %r>' % (self.countryid)
+
+
 # END Country
 
 def get_country_id_by_name(_countryname):
-    country = Country.query.filter_by(countryname = _countryname).first()  
+    country = Country.query.filter_by(countryname=_countryname).first()
     return country
+
+
 # END get_country_id_by_name
 
 def get_all_countries():
     countries = Country.query.order_by(Country.countryname).all()
     return countries
+
+
 # END get_all_countries
 
 
@@ -248,11 +275,15 @@ class Cuisine(db.Model):
 
     def __repr__(self):
         return '<CuisineID %r>' % self.cuisineid
+
+
 # END Cuisine
 
 def get_all_cuisines():
     cuisines = Cuisine.query.order_by(Cuisine.cuisineid).all()
     return cuisines
+
+
 # END get_all_cuisines
 
 
@@ -271,7 +302,7 @@ class Customer(db.Model):
     userid = db.Column(db.Integer, db.ForeignKey('user.userid'))
 
     def __init__(self, address, street, city, state, zipcode, countryid, phone_number, preference, userid):
-        self.address = address    # aka apt_no or whatever
+        self.address = address  # aka apt_no or whatever
         self.street = street
         self.city = city
         self.state = state
@@ -296,20 +327,28 @@ class Customer(db.Model):
         self.preference = _pref
 
         return 0
+
+
 # END Customer
 
 def get_customer_by_user(_user):
-    cust = Customer.query.filter_by(userid = _user.userid).first()
+    cust = Customer.query.filter_by(userid=_user.userid).first()
     return cust
+
+
 # END get_customer_by_user
 
 def get_customer_by_id(_custid):
-    cust = Customer.query.filter_by(customerid = _custid).first()
+    cust = Customer.query.filter_by(customerid=_custid).first()
     return cust
+
+
 # END get_customer_by_id
 
 def get_all_customers():
     return Customer.query.order_by(Customer.customerid).all()
+
+
 # END get_all_customers
 
 
@@ -334,15 +373,21 @@ class FoodItem(db.Model):
 
     def __repr__(self):
         return '<FoodID %r>' % self.foodid
+
+
 # END FoodItem
 
 def get_fooditem_by_id(_foodid):
-    food = FoodItem.query.filter_by(foodid = _foodid).first()
+    food = FoodItem.query.filter_by(foodid=_foodid).first()
     return food
+
+
 # END get_fooditem_by_id
 
 def get_all_fooditems():
     return FoodItem.query.order_by(FoodItem.foodname).all()
+
+
 # END get_all_fooditems
 
 
@@ -358,6 +403,8 @@ class CuisineItem(db.Model):
 
     def __repr__(self):
         return '<FoodID %r CuisineID %r>' % (self.foodid, self.cuisineid)
+
+
 # END CuisineItem
 
 # This actually doesn't return a list of FoodItem objects, but instead a list
@@ -376,6 +423,8 @@ def get_fooditems_by_cuisine_id(_cuisineid):
         foods.append(r)
 
     return foods
+
+
 # END get_fooditems_by_cuisine_id
 
 
@@ -403,9 +452,9 @@ class User(db.Model):
                _city, _state, _zipcode, _countryid, _phoneno, _chefspecid, _custpref):
 
         if (_email and _email != self.email and len(_email) > 6):
-             if (get_user_by_email(_email) == None):
-                 self.email = _email
-                 return 1
+            if (get_user_by_email(_email) == None):
+                self.email = _email
+                return 1
 
         # don't want to figure out password right now
         if (_passwd):
@@ -481,20 +530,28 @@ class User(db.Model):
 
         db.session.commit()
         return 0
+
+
 # END User
 
 def get_user_by_email(_email):
-    user = User.query.filter_by(email = _email).first()
+    user = User.query.filter_by(email=_email).first()
     return user
+
+
 # END get_user_by_email
 
 def get_user_by_id(_userid):
-    user = User.query.filter_by(userid = _userid).first()
+    user = User.query.filter_by(userid=_userid).first()
     return user
+
+
 # END get_user_by_id
 
 def get_all_users():
     return User.query.order_by(userid).all()
+
+
 # END get_all_users
 
 def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode, countryid, phoneno, user_type):
@@ -530,6 +587,8 @@ def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode
     db.session.commit()
 
     return 0
+
+
 # END create_user
 
 
@@ -560,16 +619,22 @@ class OrderFood(db.Model):
 
     def get_chef(self):
         return get_chef_by_id(self.chefid)
+
+
 # END OrderFood
 
 def get_orders_by_customer_id(_custid):
-    orders = OrderFood.query.filter_by(customerid = _custid).all()
+    orders = OrderFood.query.filter_by(customerid=_custid).all()
     return orders
+
+
 # END get_orders_by_customer_id
 
 def get_orders_by_chef_id(_chefid):
-    orders = OrderFood.query.filter_by(chefid = _chefid).all()
+    orders = OrderFood.query.filter_by(chefid=_chefid).all()
     return orders
+
+
 # END get_orders_by_chef_id
 
 def create_order(_custid, _chefid, _foodid, _req_date, _comment):
@@ -581,6 +646,8 @@ def create_order(_custid, _chefid, _foodid, _req_date, _comment):
     db.session.commit()
 
     return 0
+
+
 # END create_order
 
 
@@ -588,38 +655,44 @@ def create_order(_custid, _chefid, _foodid, _req_date, _comment):
 class FoodItemCnt(db.Model):
     __tablename__ = 'fooditem_cnt'
 
-    foodid = db.Column(db.Integer, db.ForeignKey('fooditem.foodid'), primary_key = True)
+    foodid = db.Column(db.Integer, db.ForeignKey('fooditem.foodid'), primary_key=True)
     cnt = db.Column(db.Integer)
 
     def __repr__(self):
         return '<FoodID %r>' % self.foodid
+
+
 # END FoodItemCnt
 
-# return format is: [foodid, name, cook time, rating, price, counter] 
+# return format is: [foodid, name, cook time, rating, price, counter]
 def get_most_popular_foods():
     stmt = "SELECT fooditem.foodid, fooditem.foodname, fooditem.cook_time, " \
            "  fooditem.food_rating, fooditem.price, fooditem_cnt.counter " \
            "FROM fooditem_cnt JOIN fooditem ON fooditem.foodid = fooditem_cnt.foodid " \
            "ORDER BY counter " \
            "LIMIT 100"
-    
+
     res = db.engine.execute(text(stmt))
     foods = []
     for r in res:
         foods.append(r)
 
     return foods
+
+
 # END get_most_popular_chefs
 
 
 class ChefCnt(db.Model):
     __tablename__ = 'chef_cnt'
 
-    chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'), primary_key = True)
+    chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'), primary_key=True)
     cnt = db.Column(db.Integer)
 
     def __repr__(self):
         return '<ChefID %r>' % self.chefid
+
+
 # END ChefCnt
 
 # return format is: [userid, chefid, fname, lname, countryid, countryname, cuisineid,
@@ -636,7 +709,7 @@ def get_most_popular_chefs():
            "ORDER BY counter " \
            "LIMIT 100"
 
-    #stmt = "SELECT  " \
+    # stmt = "SELECT  " \
     #       "FROM (((chef_cnt JOIN chef ON chef.chefid = chef_cnt.chefid " \
     #       "ORDER BY counter " \
     #       "LIMIT 100"
@@ -647,4 +720,5 @@ def get_most_popular_chefs():
         chefs.append(r)
 
     return chefs
+
 # END get_most_popular_chefs
