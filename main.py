@@ -362,19 +362,7 @@ def orderpage():
 @app.route('/dashboard_order/', methods=['GET', 'POST'])
 @is_logged_in
 def dashboard_order():
-    form = forms.DashboardOrderForm(request.form)
-    form.cuisine.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
-
-    if (request.method == 'POST' and form.validate()):
-        cuisineid = form.cuisine.data
-        print cuisineid
-        foods = models.get_fooditems_by_cuisine_id(cuisineid)
-
-        return render_template('dashboard_order.html', form = form,
-                                                       foods = foods)
-
-    return render_template('dashboard_order.html', form = form,
-                                                   foods = [])
+    return render_template('dashboard_order.html')
 
 
 @app.route('/statistics', methods=['GET'])
@@ -398,16 +386,38 @@ def statistics():
 @app.route('/cheflist/', methods=['GET', 'POST'])
 @is_logged_in
 def cheflist():
-    # get all chefs
-    chefs = get_chef_details_list()
+    form = forms.FindChefForm(request.form)
+    form.country.choices = [(c.countryid, c.countryname) for c in models.get_all_countries()]
 
-    return render_template('cheflist.html', chefs = chefs)
+    if (request.method == 'POST' and form.validate()):
+        countryid = form.country.data
+        print countryid
+        chefs = models.get_chefs_by_countryid(countryid)
+
+        return render_template('cheflist.html', form = form,
+                                                chefs = chefs)
+
+    return render_template('cheflist.html', form = form,
+                                            chefs = [])
 
 
-@app.route('/meallist', methods=['GET', 'POST'])
-@app.route('/meallist/', methods=['GET', 'POST'])
-def meallist():
-    return render_template('cheflist.html')
+@app.route('/foodlist', methods=['GET', 'POST'])
+@app.route('/foodlist/', methods=['GET', 'POST'])
+@is_logged_in
+def foodlist():
+    form = forms.FindFoodForm(request.form)
+    form.cuisine.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
+
+    if (request.method == 'POST' and form.validate()):
+        cuisineid = form.cuisine.data
+        print cuisineid
+        foods = models.get_fooditems_by_cuisine_id(cuisineid)
+
+        return render_template('foodlist.html', form = form,
+                                                foods = foods)
+
+    return render_template('foodlist.html', form = form,
+                                            foods = [])
 
 
 def update_session(user):

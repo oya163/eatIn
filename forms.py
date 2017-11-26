@@ -114,8 +114,11 @@ class FindMealForm(Form):
 # END FindMealForm
 
 
-class DashboardOrderForm(Form):
+class FindFoodForm(Form):
     cuisine = SelectField('Pick a Cuisine', coerce = int)
-    #requested_date = DateField('Requested date', format='%m/%d/%Y')
-    #comments = TextAreaField('Comments', [validators.Length(min=0)])
+# END DashboardOrderForm
+
+
+class FindChefForm(Form):
+    country = SelectField('Pick a Country', coerce = int)
 # END DashboardOrderForm

@@ -97,6 +97,15 @@ class Chef(db.Model):
 
     def get_specialty_mapping(self):
         return ChefSpecial.query.filter_by(chefid = self.chefid).first()
+
+    def get_reachouts(self):
+        return ChefReachout.query.filter_by(chefid = self.chefid).all()
+
+    def get_country(self):
+        return Country.query.filter_by(countryid = self.countryid).first()
+
+    def get_full_name(self):
+        return get_user_by_id(self.userid).fname + " " + get_user_by_id(self.userid).lname
 # END Chef
 
 def get_chef_by_user(_user):
@@ -112,6 +121,10 @@ def get_chef_by_id(_chefid):
 def get_all_chefs():
     return Chef.query.order_by(Chef.chefid).all()
 # END get_all_chefs
+
+def get_chefs_by_countryid(_countryid):
+    return Chef.query.filter_by(countryid = _countryid).all()
+# END get_chefs_by_countryid
 
 
 class ChefReachout(db.Model):
