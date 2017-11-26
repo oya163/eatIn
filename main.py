@@ -158,6 +158,20 @@ def fooditem(foodid, chefid = None):
 
     return render_template('fooditem.html', food = food,
                                             chefs = chefs)
+# END fooditem
+
+
+@app.route('/chef', methods=['GET'])
+@app.route('/chef/', methods=['GET'])
+@app.route('/chef/<chefid>', methods=['GET'])
+@is_logged_in
+def chef(chefid, foodid = None):
+    chef = models.get_chef_by_id(chefid)
+    foods = models.get_fooditems_by_chef_id(int(chefid))
+
+    return render_template('chef.html', chef = chef,
+                                        foods = foods)
+# END chef
 
 
 @app.route('/confirmorder/<foodid>/<chefid>', methods=['GET', 'POST'])
@@ -183,6 +197,7 @@ def confirmorder(foodid, chefid):
     return render_template('confirmorder.html', form = form,
                                                 food = food,
                                                 chef = chef)
+# END confirmorder
 
 
 @app.route('/orderhistory')
@@ -195,6 +210,7 @@ def orderhistory():
 @app.route('/about/')
 def about():
     return render_template('about.html')
+# END about
 
 
 @app.route('/contactus')
@@ -287,7 +303,7 @@ def account():
             zipcode   = chef.zipcode
             countryid = chef.countryid
             phoneno   = chef.phone_number
-            chefspec  = chef.get_speciality()
+            chefspec  = chef.get_specialty()
             custpref  = cust.preference
         elif (chef):
             usertype  = "chef"
@@ -298,7 +314,7 @@ def account():
             zipcode   = chef.zipcode
             countryid = chef.countryid
             phoneno   = chef.phone_number
-            chefspec  = chef.get_speciality()
+            chefspec  = chef.get_specialty()
         elif (cust):
             usertype  = "customer"
             aptno     = cust.address
@@ -363,6 +379,7 @@ def orderpage():
 @is_logged_in
 def dashboard_order():
     return render_template('dashboard_order.html')
+# END dashboard_order
 
 
 @app.route('/statistics', methods=['GET'])
@@ -380,6 +397,7 @@ def statistics():
     return render_template('statistics.html', chefs = chefs,
                                               foods = foods,
                                               cuisines = cuisines)
+# END statistics
 
 
 @app.route('/cheflist', methods=['GET', 'POST'])
@@ -399,6 +417,7 @@ def cheflist():
 
     return render_template('cheflist.html', form = form,
                                             chefs = [])
+# END cheflist
 
 
 @app.route('/foodlist', methods=['GET', 'POST'])
@@ -418,6 +437,7 @@ def foodlist():
 
     return render_template('foodlist.html', form = form,
                                             foods = [])
+# END foodlist
 
 
 def update_session(user):

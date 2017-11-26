@@ -27,8 +27,8 @@
             </tr>
             {% for chef in chefs %}
                 <tr>
-                    <td>{{ chef.get_full_name() }}</td>
-                    <td>{{ chef.get_speciality().cuisine_name }}</td>
+                    <td><a href="{{ url_for('chef', chefid=chef.chefid) }}">{{ chef.get_full_name() }}</td>
+                    <td>{{ chef.get_specialty().cuisine_name }}</td>
                     <td>{{ chef.get_country().countryname }}</td>
                     <td></td>
                 </tr>

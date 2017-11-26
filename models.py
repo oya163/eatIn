@@ -87,7 +87,7 @@ class Chef(db.Model):
     def get_user(self):
         return get_user_by_id(self.userid)
 
-    def get_speciality(self):
+    def get_specialty(self):
         chefspec = ChefSpecial.query.filter_by(chefid = self.chefid).first()
         if (chefspec != None):
             cuisine = Cuisine.query.filter_by(cuisineid = chefspec.cuisineid).first()
@@ -389,6 +389,10 @@ def get_fooditems_by_cuisine_id(_cuisineid):
         foods.append(r)
 
     return foods
+# END get_fooditems_by_cuisine_id
+
+def get_fooditems_by_chef_id(_chefid):
+    return get_fooditems_by_cuisine_id(get_chef_by_id(_chefid).get_specialty().cuisineid)
 # END get_fooditems_by_cuisine_id
 
 

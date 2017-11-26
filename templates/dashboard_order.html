@@ -6,10 +6,12 @@
 
     {% from "includes/_formhelpers.html" import render_field %}
 
-    <h1>
-    <small><a href="{{ url_for('cheflist') }}">Find a Chef</a></small>
-    <small>or</small>
-    <small><a href="{{ url_for('foodlist') }}">Find a Food</a></small>
-    </h1>
+    <div class = "container" align="center">
+        <h1>
+        <small><a href="{{ url_for('cheflist') }}">Find a Chef</a></small>
+        <small>or</small>
+        <small><a href="{{ url_for('foodlist') }}">Find a Food</a></small>
+        </h1>
+    </div>
 
 {% endblock %}
