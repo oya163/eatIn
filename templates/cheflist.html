@@ -12,12 +12,40 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+    <h1>Place an Order<br/>
+    <small>Find a Chef</small>
+    </h1>
+    <hr/>
+
     {% from "includes/_formhelpers.html" import render_field %}
 
     <div class = "container" align="center">
+        <form method="post" action="">
+            <div class="form-group">
+                <div class="input-group" aria-describedby="basic-addon3">
+                    {{ render_field(form.country, class_="form-control") }}
+                </div>
+            </div>
+            <p><input type="submit" class="btn btn-primary" value="Search"></p>
+        </form>
 
-    
-
+        <table class="table table-striped">
+            <tr>
+                <th>Chef Name</th>
+                <th>Specialty</th>
+                <th>Country</th>
+                <th>Reachout</th>
+            </tr>
+            {% for chef in chefs %}
+                <tr>
+                    <td><a href="{{ url_for('chef', chefid=chef.chefid) }}">{{ chef.get_full_name() }}</td>
+                    <td>{{ chef.get_specialty().cuisine_name }}</td>
+                    <td>{{ chef.get_country().countryname }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </table>
     </div>
+
 {% endblock %}
 >>>>>>> 842c60f56ef293d55d26be494ea9afdc0095ce07

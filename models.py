@@ -88,8 +88,13 @@ class Chef(db.Model):
     def get_user(self):
         return get_user_by_id(self.userid)
 
+<<<<<<< HEAD
     def get_speciality(self):
         chefspec = ChefSpecial.query.filter_by(chefid=self.chefid).first()
+=======
+    def get_specialty(self):
+        chefspec = ChefSpecial.query.filter_by(chefid = self.chefid).first()
+>>>>>>> 547ca80128b635e45153df331dca4e7156874861
         if (chefspec != None):
             cuisine = Cuisine.query.filter_by(cuisineid=chefspec.cuisineid).first()
             return cuisine
@@ -97,9 +102,22 @@ class Chef(db.Model):
             return None
 
     def get_specialty_mapping(self):
+<<<<<<< HEAD
         return ChefSpecial.query.filter_by(chefid=self.chefid).first()
 
 
+=======
+        return ChefSpecial.query.filter_by(chefid = self.chefid).first()
+
+    def get_reachouts(self):
+        return ChefReachout.query.filter_by(chefid = self.chefid).all()
+
+    def get_country(self):
+        return Country.query.filter_by(countryid = self.countryid).first()
+
+    def get_full_name(self):
+        return get_user_by_id(self.userid).fname + " " + get_user_by_id(self.userid).lname
+>>>>>>> 547ca80128b635e45153df331dca4e7156874861
 # END Chef
 
 def get_chef_by_user(_user):
@@ -121,6 +139,10 @@ def get_all_chefs():
 
 
 # END get_all_chefs
+
+def get_chefs_by_countryid(_countryid):
+    return Chef.query.filter_by(countryid = _countryid).all()
+# END get_chefs_by_countryid
 
 
 class ChefReachout(db.Model):
@@ -175,7 +197,6 @@ def get_chefs_by_cuisine_id(_cuisineid):
     stmt = "SELECT * " \
            "FROM chefspecial JOIN chef ON chefspecial.chefid = chef.chefid " \
            "WHERE cuisineid = %s" % (str(_cuisineid))
-    # print stmt
 
     res = db.engine.execute(text(stmt))
     chefs = []
@@ -197,7 +218,6 @@ def get_chefs_by_food_id(_foodid):
     #       "  JOIN user ON user.userid = chef.userid) " \
     #       "  JOIN country ON chef.countryid = country.countryid " \
     #       "WHERE cuisineitem.foodid = %s" % (_foodid)
-    # print stmt
 
     res = db.engine.execute(text(stmt))
     chefs = []
@@ -328,7 +348,12 @@ class Customer(db.Model):
 
         return 0
 
+<<<<<<< HEAD
 
+=======
+    def get_user(self):
+        return get_user_by_id(self.userid)
+>>>>>>> 547ca80128b635e45153df331dca4e7156874861
 # END Customer
 
 def get_customer_by_user(_user):
@@ -415,7 +440,6 @@ def get_fooditems_by_cuisine_id(_cuisineid):
     stmt = "SELECT * " \
            "FROM cuisineitem JOIN fooditem ON cuisineitem.foodid = fooditem.foodid " \
            "WHERE cuisineid = %s" % (str(_cuisineid))
-    # print stmt
 
     res = db.engine.execute(text(stmt))
     foods = []
@@ -425,6 +449,10 @@ def get_fooditems_by_cuisine_id(_cuisineid):
     return foods
 
 
+# END get_fooditems_by_cuisine_id
+
+def get_fooditems_by_chef_id(_chefid):
+    return get_fooditems_by_cuisine_id(get_chef_by_id(_chefid).get_specialty().cuisineid)
 # END get_fooditems_by_cuisine_id
 
 
@@ -554,7 +582,8 @@ def get_all_users():
 
 # END get_all_users
 
-def create_user(fname, lname, email, passwd, aptno, street, city, state, zipcode, countryid, phoneno, user_type):
+def create_user(fname, lname, email, passwd, aptno, street, city, state,
+                zipcode, countryid, phoneno, user_type):
     # create user first
     print "creating user:", fname, lname, email, passwd, aptno, street, city, state, zipcode, countryid, phoneno, user_type
 
@@ -620,7 +649,12 @@ class OrderFood(db.Model):
     def get_chef(self):
         return get_chef_by_id(self.chefid)
 
+<<<<<<< HEAD
 
+=======
+    def get_customer(self):
+        return get_customer_by_id(self.customerid)
+>>>>>>> 547ca80128b635e45153df331dca4e7156874861
 # END OrderFood
 
 def get_orders_by_customer_id(_custid):
@@ -655,8 +689,13 @@ def create_order(_custid, _chefid, _foodid, _req_date, _comment):
 class FoodItemCnt(db.Model):
     __tablename__ = 'fooditem_cnt'
 
+<<<<<<< HEAD
     foodid = db.Column(db.Integer, db.ForeignKey('fooditem.foodid'), primary_key=True)
     cnt = db.Column(db.Integer)
+=======
+    foodid = db.Column(db.Integer, db.ForeignKey('fooditem.foodid'), primary_key = True)
+    counter = db.Column(db.Integer)
+>>>>>>> 547ca80128b635e45153df331dca4e7156874861
 
     def __repr__(self):
         return '<FoodID %r>' % self.foodid
@@ -666,12 +705,24 @@ class FoodItemCnt(db.Model):
 
 # return format is: [foodid, name, cook time, rating, price, counter]
 def get_most_popular_foods():
+<<<<<<< HEAD
     stmt = "SELECT fooditem.foodid, fooditem.foodname, fooditem.cook_time, " \
            "  fooditem.food_rating, fooditem.price, fooditem_cnt.counter " \
            "FROM fooditem_cnt JOIN fooditem ON fooditem.foodid = fooditem_cnt.foodid " \
            "ORDER BY counter " \
            "LIMIT 100"
 
+=======
+    LIM = 100
+    stmt = "CALL get_most_popular_foods(%d)" % (LIM)
+
+    #stmt = "SELECT fooditem.foodid, fooditem.foodname, fooditem.cook_time, " \
+    #       "  fooditem.food_rating, fooditem.price, fooditem_cnt.counter " \
+    #       "FROM fooditem_cnt JOIN fooditem ON fooditem.foodid = fooditem_cnt.foodid " \
+    #       "ORDER BY counter " \
+    #       "LIMIT 100"
+    
+>>>>>>> 547ca80128b635e45153df331dca4e7156874861
     res = db.engine.execute(text(stmt))
     foods = []
     for r in res:
@@ -686,8 +737,13 @@ def get_most_popular_foods():
 class ChefCnt(db.Model):
     __tablename__ = 'chef_cnt'
 
+<<<<<<< HEAD
     chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'), primary_key=True)
     cnt = db.Column(db.Integer)
+=======
+    chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'), primary_key = True)
+    counter = db.Column(db.Integer)
+>>>>>>> 547ca80128b635e45153df331dca4e7156874861
 
     def __repr__(self):
         return '<ChefID %r>' % self.chefid
@@ -698,16 +754,19 @@ class ChefCnt(db.Model):
 # return format is: [userid, chefid, fname, lname, countryid, countryname, cuisineid,
 #                    cuisine_name, counter]
 def get_most_popular_chefs():
-    stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname," \
-           " country.countryid, country.countryname, cuisine.cuisineid, cuisine.cuisine_name, " \
-           " chef_cnt.counter " \
-           "FROM ((((chef JOIN country ON chef.countryid = country.countryid) " \
-           "  JOIN chefspecial ON chefspecial.chefid = chef.chefid) " \
-           "  JOIN cuisine ON chefspecial.cuisineid = cuisine.cuisineid) " \
-           "  JOIN user ON user.userid = chef.userid) " \
-           "  JOIN chef_cnt ON chef_cnt.chefid = chef.chefid " \
-           "ORDER BY counter " \
-           "LIMIT 100"
+    LIM = 100
+    stmt = "CALL get_most_popular_chefs(%d)" % (LIM)
+
+    #stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname," \
+    #       " country.countryid, country.countryname, cuisine.cuisineid, cuisine.cuisine_name, " \
+    #       " chef_cnt.counter " \
+    #       "FROM ((((chef JOIN country ON chef.countryid = country.countryid) " \
+    #       "  JOIN chefspecial ON chefspecial.chefid = chef.chefid) " \
+    #       "  JOIN cuisine ON chefspecial.cuisineid = cuisine.cuisineid) " \
+    #       "  JOIN user ON user.userid = chef.userid) " \
+    #       "  JOIN chef_cnt ON chef_cnt.chefid = chef.chefid " \
+    #       "ORDER BY counter " \
+    #       "LIMIT 100"
 
     # stmt = "SELECT  " \
     #       "FROM (((chef_cnt JOIN chef ON chef.chefid = chef_cnt.chefid " \
@@ -722,3 +781,27 @@ def get_most_popular_chefs():
     return chefs
 
 # END get_most_popular_chefs
+
+
+class CuisineCnt(db.Model):
+    __tablename__ = 'cuisine_cnt'
+
+    cuisineid = db.Column(db.Integer, db.ForeignKey('cuisine.cuisineid'), primary_key = True)
+    counter = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '<CuisineID %r>' % self.cuisineid
+# END CuisineCnt
+
+# return format is: [cuisineid, cuisine_name, counter]
+def get_most_popular_cuisines():
+    LIM = 100
+    stmt = "CALL get_most_popular_cuisines(%d)" % (LIM)
+
+    res = db.engine.execute(text(stmt))
+    cuisines = []
+    for r in res:
+        cuisines.append(r)
+
+    return cuisines
+# END get_most_popular_cuisines

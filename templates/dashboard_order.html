@@ -42,34 +42,12 @@
     {% from "includes/_formhelpers.html" import render_field %}
 
     <div class = "container" align="center">
-        <form method="post" action="">
-            <div class="form-group">
-                <div class="input-group" aria-describedby="basic-addon3">
-                    {{ render_field(form.cuisine, class_="form-control") }}
-                </div>
-            </div>
-            <p><input type="submit" class="btn btn-primary" value="Search"></p>
-        </form>
-
-        <table class="table table-striped">
-        <tr>
-            <th>#</th>
-            <th>Food Name</th>
-            <th>Prep Time</th>
-            <th>Price</th>
-            <th>Rating</th>
-        </tr>
-        {% for food in foods %}
-            <tr>
-                <td>{{ food[0] }}</td>
-                <td><a href="{{ url_for('fooditem', foodid=food[0]) }}">{{ food[3] }}</a></td>
-                <td>{{ food[5] }}</td>
-                <td>{{ food[7] }}</td>
-                <td>{{ food[6] }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-
+        <h1>
+        <small><a href="{{ url_for('cheflist') }}">Find a Chef</a></small>
+        <small>or</small>
+        <small><a href="{{ url_for('foodlist') }}">Find a Food</a></small>
+        </h1>
     </div>
+
 {% endblock %}
 >>>>>>> 842c60f56ef293d55d26be494ea9afdc0095ce07
