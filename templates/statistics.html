@@ -49,5 +49,19 @@
         {% endfor %}
     </table>
 
+    <h1><small>Cuisines</small></h1>
+    <table class="table table-striped">
+        <tr>
+            <th>Cuisine Name</th>
+            <th>Orders</th>
+        </tr>
+        {% for cuisine in cuisines %}
+            <tr>
+                <td>{{ cuisine[1] }}</td>
+                <td>{{ cuisine[2] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
     </div>
 {% endblock %}

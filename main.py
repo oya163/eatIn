@@ -106,7 +106,7 @@ def dashboard():
         _orders_as_cust = models.get_orders_by_customer_id(session['custid'])
 
     if (session['chefid']):
-        _orders_as_chef = models.get_orders_by_customer_id(session['chefid'])
+        _orders_as_chef = models.get_orders_by_chef_id(session['chefid'])
 
     return render_template('dashboard.html',
                            orders_as_cust = _orders_as_cust,
@@ -158,6 +158,20 @@ def fooditem(foodid, chefid = None):
 
     return render_template('fooditem.html', food = food,
                                             chefs = chefs)
+# END fooditem
+
+
+@app.route('/chef', methods=['GET'])
+@app.route('/chef/', methods=['GET'])
+@app.route('/chef/<chefid>', methods=['GET'])
+@is_logged_in
+def chef(chefid, foodid = None):
+    chef = models.get_chef_by_id(chefid)
+    foods = models.get_fooditems_by_chef_id(int(chefid))
+
+    return render_template('chef.html', chef = chef,
+                                        foods = foods)
+# END chef
 
 
 @app.route('/confirmorder/<foodid>/<chefid>', methods=['GET', 'POST'])
@@ -183,6 +197,7 @@ def confirmorder(foodid, chefid):
     return render_template('confirmorder.html', form = form,
                                                 food = food,
                                                 chef = chef)
+# END confirmorder
 
 
 @app.route('/orderhistory')
@@ -195,6 +210,7 @@ def orderhistory():
 @app.route('/about/')
 def about():
     return render_template('about.html')
+# END about
 
 
 @app.route('/contactus')
@@ -287,7 +303,7 @@ def account():
             zipcode   = chef.zipcode
             countryid = chef.countryid
             phoneno   = chef.phone_number
-            chefspec  = chef.get_speciality()
+            chefspec  = chef.get_specialty()
             custpref  = cust.preference
         elif (chef):
             usertype  = "chef"
@@ -298,7 +314,7 @@ def account():
             zipcode   = chef.zipcode
             countryid = chef.countryid
             phoneno   = chef.phone_number
-            chefspec  = chef.get_speciality()
+            chefspec  = chef.get_specialty()
         elif (cust):
             usertype  = "customer"
             aptno     = cust.address
@@ -362,19 +378,9 @@ def orderpage():
 @app.route('/dashboard_order/', methods=['GET', 'POST'])
 @is_logged_in
 def dashboard_order():
-    form = forms.DashboardOrderForm(request.form)
-    form.cuisine.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
+    return render_template('dashboard_order.html')
+# END dashboard_order
 
-    if (request.method == 'POST' and form.validate()):
-        cuisineid = form.cuisine.data
-        print cuisineid
-        foods = models.get_fooditems_by_cuisine_id(cuisineid)
-
-        return render_template('dashboard_order.html', form = form,
-                                                       foods = foods)
-
-    return render_template('dashboard_order.html', form = form,
-                                                   foods = [])
 
 @app.route('/statistics', methods=['GET'])
 @app.route('/statistics/', methods=['GET'])
@@ -382,28 +388,56 @@ def dashboard_order():
 def statistics():
     chefs = models.get_most_popular_chefs()
     foods = models.get_most_popular_foods()
+    cuisines = models.get_most_popular_cuisines()
 
     print chefs
     print foods
+    print cuisines
 
     return render_template('statistics.html', chefs = chefs,
-                                              foods = foods)
+                                              foods = foods,
+                                              cuisines = cuisines)
+# END statistics
 
 
 @app.route('/cheflist', methods=['GET', 'POST'])
 @app.route('/cheflist/', methods=['GET', 'POST'])
 @is_logged_in
 def cheflist():
-    # get all chefs
-    chefs = get_chef_details_list()
+    form = forms.FindChefForm(request.form)
+    form.country.choices = [(c.countryid, c.countryname) for c in models.get_all_countries()]
 
-    return render_template('cheflist.html', chefs = chefs)
+    if (request.method == 'POST' and form.validate()):
+        countryid = form.country.data
+        print countryid
+        chefs = models.get_chefs_by_countryid(countryid)
+
+        return render_template('cheflist.html', form = form,
+                                                chefs = chefs)
+
+    return render_template('cheflist.html', form = form,
+                                            chefs = [])
+# END cheflist
 
 
-@app.route('/meallist', methods=['GET', 'POST'])
-@app.route('/meallist/', methods=['GET', 'POST'])
-def meallist():
-    return render_template('cheflist.html')
+@app.route('/foodlist', methods=['GET', 'POST'])
+@app.route('/foodlist/', methods=['GET', 'POST'])
+@is_logged_in
+def foodlist():
+    form = forms.FindFoodForm(request.form)
+    form.cuisine.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
+
+    if (request.method == 'POST' and form.validate()):
+        cuisineid = form.cuisine.data
+        print cuisineid
+        foods = models.get_fooditems_by_cuisine_id(cuisineid)
+
+        return render_template('foodlist.html', form = form,
+                                                foods = foods)
+
+    return render_template('foodlist.html', form = form,
+                                            foods = [])
+# END foodlist
 
 
 def update_session(user):
