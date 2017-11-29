@@ -50,7 +50,7 @@ class Chef(db.Model):
         return '<ChefID %r>' % self.chefid
 
     def update(self, _aptno, _street, _city, _state, _zipcode,
-               _countryid, _phoneno, _cspec):
+               _countryid, _phoneno, _cspec, _reachouts_str):
         if (_aptno and _aptno != self.address):
             self.address = _aptno
 
@@ -82,6 +82,15 @@ class Chef(db.Model):
                 cspecm = ChefSpecial(self.chefid, _cspec)
                 db.session.add(cspecm)
 
+        print "ro str=", _reachouts_str
+
+        if (_reachouts_str):
+            print "in reachouts"
+            reachouts_str = self.get_reachouts_str()
+
+            if (reachouts_str != _reachouts_str):
+                add_reachouts_by_str(self.chefid, _reachouts_str)
+
         return 0
 
     def get_user(self):
@@ -106,6 +115,24 @@ class Chef(db.Model):
 
     def get_full_name(self):
         return get_user_by_id(self.userid).fname + " " + get_user_by_id(self.userid).lname
+
+    def get_reachouts_str(self):
+        reachouts = get_reachouts_list_by_chefid(self.chefid)
+        print reachouts
+
+        reachouts_str = ""
+
+        if (reachouts == None or len(reachouts) == 0):
+            return reachouts_str
+
+        for r in reachouts:
+            print r.city
+            reachouts_str = reachouts_str + r.city + "\n"
+
+        return reachouts_str.strip()
+
+    def get_reachouts_list(self):
+        return get_reachouts_list_by_chefid(self.chefid)
 # END Chef
 
 def get_chef_by_user(_user):
@@ -130,18 +157,37 @@ def get_chefs_by_countryid(_countryid):
 class ChefReachout(db.Model):
     __tablename__ = 'chefreachout'
 
+    reachoutid = db.Column(db.Integer, primary_key=True)
     chefid = db.Column(db.Integer, db.ForeignKey('chef.chefid'), primary_key=True)
     city = db.Column(db.String(50))
     miles = db.Column(db.Integer)
 
-    def __init__(self, chefid, city):
+    def __init__(self, chefid, city, miles):
         self.chefid = chefid
         self.city = city
         self.miles
 
     def __repr__(self):
-        return '<ChefID %r City %s Miles %r>' % (self.chefid, self.city, self.miles)
+        return '<RO %r>' % (self.reachoutid)
 # END ChefReachout
+
+def get_reachouts_list_by_chefid(_chefid):
+    return ChefReachout.query.filter_by(chefid = _chefid).distinct().all()
+# END get_reachouts_list_by_chefid
+
+def add_reachouts_by_str(_chefid, _str):
+    # delete existing reachout data
+    db.engine.execute(text("CALL delete_chef_reachouts(%s)" % (_chefid)))
+
+    # add new ones
+    reachouts = _str.split("\n")
+    for r in reachouts:
+        ro = ChefReachout(_chefid, r.strip(), 0)
+        db.session.add(ro)
+    db.session.commit()
+
+    return 0
+# END add_reachouts_by_str
 
 
 class ChefSpecial(db.Model):
@@ -417,7 +463,8 @@ class User(db.Model):
         return '<UserID %r>' % self.userid
 
     def update(self, _fname, _lname, _email, _passwd, _utype, _aptno, _street,
-               _city, _state, _zipcode, _countryid, _phoneno, _chefspecid, _custpref):
+               _city, _state, _zipcode, _countryid, _phoneno, _chefspecid, 
+               _reachouts, _custpref):
 
         if (_email and _email != self.email and len(_email) > 6):
              if (get_user_by_email(_email) == None):
@@ -445,7 +492,7 @@ class User(db.Model):
             # a new one
             if (chef):
                 chef.update(_aptno, _street, _city, _state, _zipcode,
-                            _countryid, _phoneno, _chefspecid)
+                            _countryid, _phoneno, _chefspecid, _reachouts)
                 print "updated old chef", chef.chefid
             else:
                 chef = Chef(_aptno, _street, _city, _state, _zipcode,
@@ -490,7 +537,7 @@ class User(db.Model):
             # now update/create chef
             if (chef):
                 chef.update(_aptno, _street, _city, _state, _zipcode,
-                            _countryid, _phoneno, _chefspecid)
+                            _countryid, _phoneno, _chefspecid, _reachouts)
             else:
                 chef = Chef(_aptno, _street, _city, _state, _zipcode,
                             _countryid, _phoneno, None, self.userid, None)

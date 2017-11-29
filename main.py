@@ -261,17 +261,19 @@ def account():
             country   = int(form.country.data) if form.country.data else None
             phoneno   = int(form.phone_number.data) if form.phone_number.data else None
             chefspec  = None
+            reachouts = None
             custpref  = None
 
             if (chef):
                 chefspec  = int(form.chefspec.data)
+                reachouts = form.reachouts.data
             if (cust):
                 custpref  = form.custpref.data
 
             # update with new info if necessary
             r = user.update(fname, lname, email, passwd, user_type, aptno, street,
                             city, state, zipcode, country, phoneno, chefspec,
-                            custpref)
+                            reachouts, custpref)
 
             update_session(user)
 
@@ -304,6 +306,7 @@ def account():
             countryid = chef.countryid
             phoneno   = chef.phone_number
             chefspec  = chef.get_specialty()
+            reachouts = chef.get_reachouts_str()
             custpref  = cust.preference
         elif (chef):
             usertype  = "chef"
@@ -315,6 +318,7 @@ def account():
             countryid = chef.countryid
             phoneno   = chef.phone_number
             chefspec  = chef.get_specialty()
+            reachouts = chef.get_reachouts_str()
         elif (cust):
             usertype  = "customer"
             aptno     = cust.address
@@ -341,10 +345,12 @@ def account():
         form.phone_number.data = str(phoneno)
 
         form.chefspec.data     = chefspec
+        form.reachouts.data    = reachouts
         form.custpref.data     = custpref
 
         if (not chef):
             del form.chefspec
+            del form.reachouts
         if (not cust):
             del form.custpref
 

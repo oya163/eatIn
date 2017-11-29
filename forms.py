@@ -87,6 +87,7 @@ class AccountForm(Form):
 
     # Chef options
     chefspec = SelectField('Chef Speciality Cuisine', coerce = int)
+    reachouts = TextAreaField('Reachout Areas', [validators.Length(max = 500)])
 
     # Customer options
     custpref = StringField('Customer Preference Notes', [validators.Length(max=500)])
