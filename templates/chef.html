@@ -11,7 +11,7 @@
     <br/>
     Specialty: {{ chef.get_specialty().cuisine_name }} <br/>
     Country: {{ chef.get_country().countryname }} <br/>
-    Reachout: <br/>
+    Reachout: {{ chef.get_reachouts_str(True) }} <br/>
     Rating: {{ chef.rating }}/5.0 <br/>
 
     <br/>

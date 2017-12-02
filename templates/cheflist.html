@@ -30,7 +30,7 @@
                     <td><a href="{{ url_for('chef', chefid=chef.chefid) }}">{{ chef.get_full_name() }}</td>
                     <td>{{ chef.get_specialty().cuisine_name }}</td>
                     <td>{{ chef.get_country().countryname }}</td>
-                    <td></td>
+                    <td>{{ chef.get_reachouts_str(True) }}</td>
                 </tr>
             {% endfor %}
         </table>

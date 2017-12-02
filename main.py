@@ -226,6 +226,7 @@ def account():
     form = forms.AccountForm(request.form)
     form.country.choices = [(c.countryid, c.countryname) for c in models.get_all_countries()]
     form.chefspec.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
+    form.chefspec.choices.append((-1, "Pick a Specialty..."))
     #form.custpref.choices = [(c.cuisineid, c.cuisine_name) for c in models.get_all_cuisines()]
 
     # populate form with existing info
@@ -296,6 +297,7 @@ def account():
         aptno, street, city, state, zipcode, countryid, phoneno = (None,)*7
         chefspec = None
         custpref = None
+        reachouts = None
         if (chef and cust):
             usertype  = "both"
             aptno     = chef.address
@@ -344,7 +346,7 @@ def account():
         form.country.data      = countryid
         form.phone_number.data = str(phoneno)
 
-        form.chefspec.data     = chefspec
+        form.chefspec.data     = chefspec.cuisineid if chefspec else -1
         form.reachouts.data    = reachouts
         form.custpref.data     = custpref
 

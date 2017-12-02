@@ -82,8 +82,6 @@ class Chef(db.Model):
                 cspecm = ChefSpecial(self.chefid, _cspec)
                 db.session.add(cspecm)
 
-        print "ro str=", _reachouts_str
-
         if (_reachouts_str):
             print "in reachouts"
             reachouts_str = self.get_reachouts_str()
@@ -104,6 +102,14 @@ class Chef(db.Model):
         else:
             return None
 
+    def get_specialty_id(self):
+        chefspec = self.get_specialty()
+        if (chefspec != None):
+            cuisine = Cuisine.query.filter_by(cuisineid = chefspec.cuisineid).first()
+            return cuisine.cuisineid
+        else:
+            return -1
+
     def get_specialty_mapping(self):
         return ChefSpecial.query.filter_by(chefid = self.chefid).first()
 
@@ -116,9 +122,11 @@ class Chef(db.Model):
     def get_full_name(self):
         return get_user_by_id(self.userid).fname + " " + get_user_by_id(self.userid).lname
 
-    def get_reachouts_str(self):
+    def get_reachouts_str(self, single_line = False):
         reachouts = get_reachouts_list_by_chefid(self.chefid)
-        print reachouts
+
+        # set delimiter
+        DELIM = ", " if single_line else "\n"
 
         reachouts_str = ""
 
@@ -126,8 +134,7 @@ class Chef(db.Model):
             return reachouts_str
 
         for r in reachouts:
-            print r.city
-            reachouts_str = reachouts_str + r.city + "\n"
+            reachouts_str = reachouts_str + r.city + DELIM
 
         return reachouts_str.strip()
 
