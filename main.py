@@ -284,13 +284,13 @@ def account():
             if (r == 0):
                 flash('User details updated', 'success')
             else:
-                flash('Update failed', 'danger')
+                flash('Update failed, check the submitted data for errors', 'danger')
 
             return render_template('account.html', form = form,
                                                    chef = chef,
                                                    cust = cust)
         else:
-            flash('Update failed', 'danger')
+            flash('Update failed, check the submitted data for errors', 'danger')
             return render_template('account.html', form = form,
                                                    chef = chef,
                                                    cust = cust)

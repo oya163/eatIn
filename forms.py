@@ -86,7 +86,9 @@ class AccountForm(Form):
     phone_number = StringField('Phone', [validators.Length(max=50)])
 
     # Chef options
-    chefspec = SelectField('Chef Speciality Cuisine', coerce = int)
+    chefspec = SelectField('Chef Speciality Cuisine',
+                           [validators.NumberRange(min=0)],
+                           coerce = int)
     reachouts = TextAreaField('Reachout Areas', [validators.Length(max = 500)])
 
     # Customer options
