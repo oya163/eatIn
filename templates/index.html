@@ -1,22 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
-</head>
+{% extends 'layout.html' %}
 
-<body>
-{% include '/includes/_navbar.html' %}
-    <div class="container" style="margin-top:50px;">
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3 text-center">
-                {% if session_user_name %}
-                    <p>Hello <b>{{ session_user_name }}</b></p>
-                    <a href="{{ url_for('logout') }}">Logout</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+{% block body %}
+    <h1>Welcome <small>{{ session.first_name }}</small></h1>
+    <hr>
+
+    {% if session_user_name %}
+        <p>
+            Visit the
+            <b><a href="{{ url_for('dashboard') }}">Dashboard</a></b>
+            to see the list of your orders.
+        </p>
+
+        <p>
+            If you would like to begin placing an order, visit the
+            <b><a href="{{ url_for('dashboard') }}">Order</a></b>
+            page.
+        </p>
+
+        <p>
+            You can also keep track of realtime stats by checking out the
+            <b><a href="{{ url_for('statistics') }}">Statistics</a></b>
+            page.
+        </p>
+
+        <p>
+            Change account and user settings on the
+            <b><a href="{{ url_for('account') }}">Account</a></b>
+            page. If this is your first log in, it is recommended to set your user and chef specific details.
+        </p>
+
+        <br/>
+
+        <a href="{{ url_for('logout') }}">Logout</a>
+    {% endif %}
+{% endblock %}

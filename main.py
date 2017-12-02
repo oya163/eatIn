@@ -35,9 +35,11 @@ from models import db
 
 @app.route('/')
 def index():
-    if 'username' in session:
-        username_session = escape(session['username']).capitalize()
-        return render_template('index.html', session_user_name = username_session)
+    if ('username' in session):
+        return render_template('index.html',
+                               session_user_name = session['username'])
+
+    # redirct to login page if not logged in
     return redirect(url_for('login'))
 # END index
 
@@ -56,7 +58,8 @@ def login():
                 update_session(user)
 
                 flash('You are now logged in', 'success')
-                return redirect(url_for('dashboard'))
+                return render_template('index.html',
+                                       session_user_name = session['username'])
             else:
                 error = 'Invalid credentials'
                 return render_template('login.html', error = error)
