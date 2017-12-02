@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,3 +21,41 @@
     </div>
 </body>
 </html>
+=======
+{% extends 'layout.html' %}
+
+{% block body %}
+    <h1>Welcome <small>{{ session.first_name }}</small></h1>
+    <hr>
+
+    {% if session_user_name %}
+        <p>
+            Visit the
+            <b><a href="{{ url_for('dashboard') }}">Dashboard</a></b>
+            to see the list of your orders.
+        </p>
+
+        <p>
+            If you would like to begin placing an order, visit the
+            <b><a href="{{ url_for('dashboard') }}">Order</a></b>
+            page.
+        </p>
+
+        <p>
+            You can also keep track of realtime stats by checking out the
+            <b><a href="{{ url_for('statistics') }}">Statistics</a></b>
+            page.
+        </p>
+
+        <p>
+            Change account and user settings on the
+            <b><a href="{{ url_for('account') }}">Account</a></b>
+            page. If this is your first log in, it is recommended to set your user and chef specific details.
+        </p>
+
+        <br/>
+
+        <a href="{{ url_for('logout') }}">Logout</a>
+    {% endif %}
+{% endblock %}
+>>>>>>> 71a637d7bbf628cdfb7b3c92168247e55dac64d8
