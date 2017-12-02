@@ -282,7 +282,7 @@ def account():
             update_session(user)
 
             if (r == 0):
-                flash('User details updated', 'success')
+                flash('User details updated. Visit account page again to see new fields', 'success')
             else:
                 flash('Update failed, check the submitted data for errors', 'danger')
 
