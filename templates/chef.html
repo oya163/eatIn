@@ -1,44 +1,3 @@
-<<<<<<< HEAD
-{% extends 'layout.html' %}
-
-{% block body %}
-    {% from "includes/_formhelpers.html" import render_field %}
-    <h1>Chef<br/></h1>
-    <hr/>
-
-    <div class = "container" align="center">
-       
-    <h1><small>{{ chef.get_full_name() }}</small></h1>
-    <br/>
-    Specialty: {{ chef.get_specialty().cuisine_name }} <br/>
-    Country: {{ chef.get_country().countryname }} <br/>
-    Reachout: <br/>
-    Rating: {{ chef.rating }}/5.0 <br/>
-
-    <br/>
-    Pick a food to complete order
-    <table class="table table-striped">
-        <tr>
-            <th>Food Name</th>
-            <th>Prep Time</th>
-            <th>Price</th>
-            <th>Rating</th>
-            <th>Order</th>
-        </tr>
-        {% for food in foods %}
-            <tr>
-                <td>{{ food[3] }}</td>
-                <td>{{ food[5] }}</td>
-                <td>{{ food[7] }}</td>
-                <td>{{ food[6] }}</td>
-                <td><a href="{{ url_for('confirmorder', foodid=food[0], chefid=chef.chefid) }}">Order now</a></td>
-            </tr>
-        {% endfor %}
-    </table> 
-
-    </div>
-{% endblock %}
-=======
 {% extends 'layout.html' %}
 
 {% block body %}
@@ -78,4 +37,3 @@
 
     </div>
 {% endblock %}
->>>>>>> 71a637d7bbf628cdfb7b3c92168247e55dac64d8
