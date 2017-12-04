@@ -687,7 +687,7 @@ def get_most_popular_foods():
         foods.append(r)
 
     return foods
-# END get_most_popular_chefs
+# END get_most_popular_foods
 
 
 class ChefCnt(db.Model):

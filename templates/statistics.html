@@ -41,7 +41,7 @@
         </tr>
         {% for chef in chefs %}
             <tr>
-                <td>{{ chef[2] + " " + chef[3] }}</td>
+                <td><a href="{{ url_for('chef', chefid=chef[1]) }}">{{ chef[2] + " " + chef[3] }}</a></td>
                 <td>{{ chef[7] }}</td>
                 <td>{{ chef[5] }}</td>
                 <td>{{ chef[8] }}</td>
