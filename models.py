@@ -627,6 +627,12 @@ class OrderFood(db.Model):
     def __repr__(self):
         return '<OrderID %r>' % self.orderid
 
+    def update_comment(self, _comment):
+        print _comment
+        self.comment = _comment
+        db.session.commit()
+        return 0
+
     def get_food(self):
         return get_fooditem_by_id(self.foodid)
 
@@ -658,6 +664,10 @@ def create_order(_custid, _chefid, _foodid, _req_date, _comment):
     return 0
 # END create_order
 
+def get_order_by_id(_orderid):
+    return OrderFood.query.filter_by(orderid = _orderid).first()
+# END get_order_by_id
+
 
 # Counter tables (read only)
 class FoodItemCnt(db.Model):
@@ -672,7 +682,7 @@ class FoodItemCnt(db.Model):
 
 # return format is: [foodid, name, cook time, rating, price, counter] 
 def get_most_popular_foods():
-    LIM = 100
+    LIM = 50
     stmt = "CALL get_most_popular_foods(%d)" % (LIM)
 
     #stmt = "SELECT fooditem.foodid, fooditem.foodname, fooditem.cook_time, " \
@@ -703,7 +713,7 @@ class ChefCnt(db.Model):
 # return format is: [userid, chefid, fname, lname, countryid, countryname, cuisineid,
 #                    cuisine_name, counter]
 def get_most_popular_chefs():
-    LIM = 100
+    LIM = 50
     stmt = "CALL get_most_popular_chefs(%d)" % (LIM)
 
     #stmt = "SELECT chef.userid, chef.chefid, user.fname, user.lname," \
@@ -743,7 +753,7 @@ class CuisineCnt(db.Model):
 
 # return format is: [cuisineid, cuisine_name, counter]
 def get_most_popular_cuisines():
-    LIM = 100
+    LIM = 50
     stmt = "CALL get_most_popular_cuisines(%d)" % (LIM)
 
     res = db.engine.execute(text(stmt))

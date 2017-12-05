@@ -30,11 +30,15 @@
 <script type="text/javascript" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function(){
-        $('#foodtable').dataTable();
+        $('#foodtable').dataTable({
+            "lengthMenu": [[20, 50, 100, -1], [20, 50, 100, "All"]]
+        });
     }       );
 
     $(document).ready(function(){
-        $('#cheftable').dataTable();
+        $('#cheftable').dataTable({
+            "lengthMenu": [[20, 50, 100, -1], [20, 50, 100, "All"]]
+        });
     }       );
 </script>
 

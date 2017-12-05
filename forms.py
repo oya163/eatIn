@@ -112,6 +112,11 @@ class ConfirmOrderForm(Form):
 # END ConfirmOrderForm
 
 
+class UpdateOrderForm(Form):
+    comment = TextAreaField('Comments', [validators.Length(min = 0)])
+# END ConfirmOrderForm
+
+
 class FindMealForm(Form):
     cuisine = SelectField('Cuisine', coerce = int)
 # END FindMealForm

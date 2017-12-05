@@ -203,6 +203,51 @@ def confirmorder(foodid, chefid):
 # END confirmorder
 
 
+@app.route('/orderinfo/<orderid>', methods=['GET', 'POST'])
+@app.route('/orderinfo/<orderid>/', methods=['GET', 'POST'])
+@is_logged_in
+def orderinfo(orderid):
+    form = forms.UpdateOrderForm(request.form)
+
+    order = models.get_order_by_id(int(orderid))
+    food = models.get_fooditem_by_id(order.foodid)
+    chef = models.get_chef_by_id(order.chefid)
+    cust = models.get_customer_by_id(order.customerid)
+
+    print order, food, chef, cust
+
+    if (request.method == 'POST' and form.validate()):
+        comment = form.comment.data
+        order.update_comment(comment)
+
+        if (session['chefid'] == chef.chefid):
+            flash('You are the CHEF of this order!', 'success')
+        elif (session['custid'] == cust.customerid):
+            flash('You are the CUSTOMER of this order!', 'success')
+
+        flash('Order comment updated', 'success')
+
+        return render_template('orderinfo.html', form = form,
+                                                 order = order,
+                                                 food = food,
+                                                 chef = chef,
+                                                 cust = cust)
+
+    form.comment.data = order.comment
+
+    if (session['chefid'] == chef.chefid):
+        flash('You are the CHEF of this order!', 'success')
+    elif (session['custid'] == cust.customerid):
+        flash('You are the CUSTOMER of this order!', 'success')
+
+    return render_template('orderinfo.html', form = form,
+                                             order = order,
+                                             food = food,
+                                             chef = chef,
+                                             cust = cust)
+# END orderinfo
+
+
 @app.route('/orderhistory')
 @app.route('/orderhistory/')
 def orderhistory():
