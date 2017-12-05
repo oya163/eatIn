@@ -2,7 +2,7 @@
 
 {% block body %}
     <h1>Place an Order<br/>
-    <small>Find a Food</small>
+        <small>Find a Food</small>
     </h1>
     <hr/>
 
@@ -18,24 +18,26 @@
             <p><input type="submit" class="btn btn-primary" value="Search"></p>
         </form>
 
-        <table class="table table-striped">
-        <tr>
-            <th>#</th>
-            <th>Food Name</th>
-            <th>Prep Time</th>
-            <th>Price</th>
-            <th>Rating</th>
-        </tr>
-        {% for food in foods %}
+        <table id="foodtable" class="table table-striped">
+            <thead>
             <tr>
-                <td>{{ food[0] }}</td>
-                <td><a href="{{ url_for('fooditem', foodid=food[0]) }}">{{ food[3] }}</a></td>
-                <td>{{ food[5] }}</td>
-                <td>{{ food[7] }}</td>
-                <td>{{ food[6] }}</td>
+                <th>#</th>
+                <th>Food Name</th>
+                <th>Prep Time</th>
+                <th>Price</th>
+                <th>Rating</th>
             </tr>
-        {% endfor %}
-    </table>
+            </thead>
+            {% for food in foods %}
+                <tr>
+                    <td>{{ food[0] }}</td>
+                    <td><a href="{{ url_for('fooditem', foodid=food[0]) }}">{{ food[3] }}</a></td>
+                    <td>{{ food[5] }}</td>
+                    <td>{{ food[7] }}</td>
+                    <td>{{ food[6] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
 
     </div>
 {% endblock %}

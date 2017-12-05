@@ -13,9 +13,9 @@ from config import *
 # app/db config stuff
 app = Flask(__name__)
 app.config["APPLICATION_ROOT"] = APP_ROOT
-app.config['SQLALCHEMY_DATABASE_URI'] = SQL_URI
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:test123@localhost:3306/eatin'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.secret_key = SEC_KEY
+app.secret_key = 'test123'
 
 db = SQLAlchemy(app)
 

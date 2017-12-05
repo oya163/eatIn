@@ -6,7 +6,8 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-    <link rel=stylesheet type=text/css href="/static/style.css">
+    <link rel="stylesheet" type=text/css href="/static/style.css">
+
 </head>
 
 <body>
@@ -24,5 +25,14 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+<!-- jQuery for DataTables-->
+<link rel="stylesheet" type=text/css href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+<script type="text/javascript" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#foodtable').dataTable();
+    }       );
+</script>
 </body>
 </html>
