@@ -524,6 +524,10 @@ class User(db.Model):
             cust = get_customer_by_user(self)
 
             if (chef):
+                orders = get_orders_by_chef_id(chef.chefid)
+                for o in orders:
+                    cancel_order(o, "system")
+
                 db.engine.execute(text("CALL delete_chef(%s)" % (chef.chefid)))
 
             # now update old/make new customer
@@ -539,6 +543,10 @@ class User(db.Model):
             cust = get_customer_by_user(self)
 
             if (cust):
+                orders = get_orders_by_customer_id(cust.customerid)
+                for o in orders:
+                    cancel_order(o, "system")
+
                 db.engine.execute(text("CALL delete_customer(%s)" % (cust.customerid)))
 
             # now update/create chef
