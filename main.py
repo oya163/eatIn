@@ -288,10 +288,23 @@ def orderinfo(orderid):
 # END orderinfo
 
 
-@app.route('/orderhistory')
-@app.route('/orderhistory/')
+@app.route('/orderhistory', methods=['GET'])
+@app.route('/orderhistory/', methods=['GET'])
+@is_logged_in
 def orderhistory():
-    return render_template('orderhistory.html')
+    _orders_as_cust = []
+    _orders_as_chef = []
+
+    if (session['custid']):
+        _orders_as_cust = models.get_archived_orders_by_customer_id(session['custid'])
+
+    if (session['chefid']):
+        _orders_as_chef = models.get_archived_orders_by_chef_id(session['chefid'])
+
+    return render_template('orderhistory.html',
+                           orders_as_cust = _orders_as_cust,
+                           orders_as_chef = _orders_as_chef)
+# END orderhistory
 
 
 @app.route('/about')

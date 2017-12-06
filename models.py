@@ -707,6 +707,16 @@ class ArchivedOrder(db.Model):
         return get_customer_by_id(self.customerid)
 # END ArchivedOrder
 
+def get_archived_orders_by_customer_id(_custid):
+    orders = ArchivedOrder.query.filter_by(customerid = _custid).all()
+    return orders
+# END get_archived_orders_by_customer_id
+
+def get_archived_orders_by_chef_id(_chefid):
+    orders = ArchivedOrder.query.filter_by(chefid = _chefid).all()
+    return orders
+# END get_archived_orders_by_chef_id
+
 def cancel_order(_order, _who):
     status = "cancelled by %s" % _who
 
