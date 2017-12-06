@@ -34,5 +34,20 @@
         <p><input type="submit" class="btn btn-primary" value="Update comment"> </p>
     </form>
 
-    </div>
+
+    <hr/>
+
+    Set order status<br/>
+
+    {% if session.chefid == chef.chefid %}
+        <a href="{{ url_for('cancelorder', orderid=order.orderid) }}">Complete</a>
+        <a href="{{ url_for('completeorder', orderid=order.orderid) }}">Deny</a>
+    {% endif %}
+
+    {% if session.custid == cust.customerid %}
+        <a href="{{ url_for('cancelorder', orderid=order.orderid) }}">Cancel</a>
+    {% endif %}
+
+    <div>
+
 {% endblock %}

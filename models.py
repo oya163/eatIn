@@ -669,6 +669,77 @@ def get_order_by_id(_orderid):
 # END get_order_by_id
 
 
+class ArchivedOrder(db.Model):
+    __tablename__ = 'archivedorder'
+
+    orderid = db.Column(db.Integer, primary_key=True)
+    customerid = db.Column(db.Integer)
+    chefid = db.Column(db.Integer)
+    foodid = db.Column(db.Integer)
+    order_date = db.Column(db.DateTime)
+    req_date = db.Column(db.DateTime)
+    comment = db.Column(db.String(1000))
+    status = db.Column(db.String(40))
+    end_date = db.Column(db.DateTime)
+
+    def __init__(self, old_order, status, end_date):
+        self.orderid = old_order.orderid
+        self.customerid = old_order.customerid
+        self.chefid = old_order.chefid
+        self.foodid = old_order.foodid
+        self.order_date = old_order.order_date
+        self.req_date = old_order.req_date
+        self.comment = old_order.comment
+
+        self.status = status
+        self.end_date = end_date
+
+    def __repr__(self):
+        return '<ArchivedID %r>' % self.orderid
+
+    def get_food(self):
+        return get_fooditem_by_id(self.foodid)
+
+    def get_chef(self):
+        return get_chef_by_id(self.chefid)
+
+    def get_customer(self):
+        return get_customer_by_id(self.customerid)
+# END ArchivedOrder
+
+def cancel_order(_order, _who):
+    status = "cancelled by %s" % _who
+
+    end_date = datetime.datetime.now()
+
+    # TRANSACTION START
+    ao = ArchivedOrder(_order, status, end_date)
+    db.session.add(ao)
+
+    db.session.delete(_order)
+    db.session.commit()
+    # TRANSACTION END
+
+    return 0
+# END cancel_order
+
+def complete_order(_order):
+    status = "completed by chef"
+
+    end_date = datetime.datetime.now()
+
+    # TRANSACTION START
+    ao = ArchivedOrder(_order, status, end_date)
+    db.session.add(ao)
+
+    db.session.delete(_order)
+    db.session.commit()
+    # TRANSACTION END
+
+    return 0
+# END cancel_order
+
+
 # Counter tables (read only)
 class FoodItemCnt(db.Model):
     __tablename__ = 'fooditem_cnt'

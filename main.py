@@ -203,6 +203,46 @@ def confirmorder(foodid, chefid):
 # END confirmorder
 
 
+@app.route('/cancelorder/<orderid>', methods=['GET'])
+@app.route('/cancelorder/<orderid>/', methods=['GET'])
+@is_logged_in
+def cancelorder(orderid):
+    order = models.get_order_by_id(int(orderid))
+    print order
+
+    if (session['chefid'] == order.chefid):
+        models.cancel_order(order, "chef")
+        flash('Order cancelled.', 'success')
+
+    elif (session['custid'] == order.customerid):
+        models.cancel_order(order, "customer")
+        flash('Order cancelled.', 'success')
+
+    else:
+        flash('Order not changed', 'danger')
+
+    return redirect(url_for('dashboard'))
+# END cancelorder
+
+
+@app.route('/completeorder/<orderid>', methods=['GET'])
+@app.route('/completeorder/<orderid>/', methods=['GET'])
+@is_logged_in
+def completeorder(orderid):
+    order = models.get_order_by_id(int(orderid))
+    print order
+
+    if (session['chefid'] == order.chefid):
+        models.cancel_order(order, "chef")
+        flash('Order completed.', 'success')
+
+    else:
+        flash('Order not changed', 'danger')
+
+    return redirect(url_for('dashboard'))
+# END completeorder
+
+
 @app.route('/orderinfo/<orderid>', methods=['GET', 'POST'])
 @app.route('/orderinfo/<orderid>/', methods=['GET', 'POST'])
 @is_logged_in
