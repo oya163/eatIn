@@ -707,6 +707,10 @@ class ArchivedOrder(db.Model):
         return get_customer_by_id(self.customerid)
 # END ArchivedOrder
 
+def get_archived_order_by_id(_orderid):
+    return ArchivedOrder.query.filter_by(orderid = _orderid).first()
+# END get_archived_order_by_id
+
 def get_archived_orders_by_customer_id(_custid):
     orders = ArchivedOrder.query.filter_by(customerid = _custid).all()
     return orders

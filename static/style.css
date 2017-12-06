@@ -3,6 +3,16 @@ html, body {
     width: 100%;
 }
 
+textarea {
+  width: 400px;
+  height: 250px;
+}
+
+form textarea#comment {
+     width: 400px;
+     height: 250px;
+}
+
 .bg {
     background-image: url('/static/img/about.jpg');
     background-repeat: no-repeat;

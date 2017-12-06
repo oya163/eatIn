@@ -249,7 +249,15 @@ def completeorder(orderid):
 def orderinfo(orderid):
     form = forms.UpdateOrderForm(request.form)
 
+    # try to get order from active orders list
     order = models.get_order_by_id(int(orderid))
+    is_hist = False
+
+    # if not found, use archived order
+    if (order == None):
+        order = models.get_archived_order_by_id(int(orderid))
+        is_hist = True
+
     food = models.get_fooditem_by_id(order.foodid)
     chef = models.get_chef_by_id(order.chefid)
     cust = models.get_customer_by_id(order.customerid)
@@ -271,7 +279,8 @@ def orderinfo(orderid):
                                                  order = order,
                                                  food = food,
                                                  chef = chef,
-                                                 cust = cust)
+                                                 cust = cust,
+                                                 is_hist = is_hist)
 
     form.comment.data = order.comment
 
@@ -284,7 +293,8 @@ def orderinfo(orderid):
                                              order = order,
                                              food = food,
                                              chef = chef,
-                                             cust = cust)
+                                             cust = cust,
+                                             is_hist = is_hist)
 # END orderinfo
 
 

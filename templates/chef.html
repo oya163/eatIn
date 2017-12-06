@@ -5,7 +5,7 @@
     <h1>Chef<br/></h1>
     <hr/>
 
-    <div class = "container" align="center">
+    <div class = "container" align="left">
        
     <h1><small>{{ chef.get_full_name() }}</small></h1>
     <br/>
@@ -16,7 +16,13 @@
 
     <br/>
     Pick a food to complete order
-    <table class="table table-striped">
+    </div>
+
+    <hr/>
+
+    <div class = "container" align="center">
+    <table id="foodtable" class="table table-striped">
+        <thead>
         <tr>
             <th>Food Name</th>
             <th>Prep Time</th>
@@ -24,6 +30,7 @@
             <th>Rating</th>
             <th>Order</th>
         </tr>
+        </thead>
         {% for food in foods %}
             <tr>
                 <td>{{ food[3] }}</td>
@@ -33,7 +40,8 @@
                 <td><a href="{{ url_for('confirmorder', foodid=food[0], chefid=chef.chefid) }}">Order now</a></td>
             </tr>
         {% endfor %}
-    </table> 
+    </table>
+    </div>
 
     </div>
 {% endblock %}
