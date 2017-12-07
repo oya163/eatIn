@@ -280,7 +280,7 @@ BEGIN
     INSERT INTO fooditem_cnt (foodid, counter)
 	VALUES(NEW.foodid, 1);
   END IF;
-  
+
   IF EXISTS(SELECT * FROM chef_cnt WHERE chef_cnt.chefid = NEW.chefid) THEN
     UPDATE chef_cnt SET counter = (counter + 1)
     WHERE chefid = NEW.chefid;
@@ -288,7 +288,7 @@ BEGIN
     INSERT INTO chef_cnt (chefid, counter)
 	VALUES(NEW.chefid, 1);
   END IF;
-  
+
   SELECT cuisine.cuisineid
   FROM ((cuisine JOIN cuisineitem ON cuisine.cuisineid = cuisineitem.cuisineid)
     JOIN fooditem ON fooditem.foodid = cuisineitem.foodid)
@@ -301,7 +301,7 @@ BEGIN
   ELSE
     INSERT INTO cuisine_cnt (cuisineid, counter)
     VALUES (@newcuisid, 1);
-  END IF; 
+  END IF;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -445,7 +445,7 @@ BEGIN
   FROM (((chefspecial JOIN chef ON chefspecial.chefid = chef.chefid)
     JOIN cuisineitem ON cuisineitem.cuisineid = chefspecial.cuisineid)
     JOIN user ON user.userid = chef.userid)
-    JOIN country ON chef.countryid = country.countryid 
+    JOIN country ON chef.countryid = country.countryid
   WHERE cuisineitem.foodid = infoodid;
 END ;;
 DELIMITER ;
