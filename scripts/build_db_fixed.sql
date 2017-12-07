@@ -62,7 +62,7 @@ CREATE TABLE `chef` (
   KEY `fk_chef_coutnryid_idx` (`countryid`),
   CONSTRAINT `fk_chef_coutnryid` FOREIGN KEY (`countryid`) REFERENCES `country` (`countryid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_chef_userid` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=98061 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=98062 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +95,7 @@ CREATE TABLE `chefreachout` (
   PRIMARY KEY (`reachoutid`),
   KEY `fk_chefreachout_chefid_idx` (`chefid`),
   CONSTRAINT `fk_chefreachout_chefid` FOREIGN KEY (`chefid`) REFERENCES `chef` (`chefid`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -201,7 +201,7 @@ CREATE TABLE `customer` (
   KEY `fk_customer_countryid_idx` (`countryid`),
   CONSTRAINT `fk_customer_countryid` FOREIGN KEY (`countryid`) REFERENCES `country` (`countryid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_customer_userid` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2012 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2013 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -252,7 +252,7 @@ CREATE TABLE `orderfood` (
   `foodid` int(11) NOT NULL,
   `order_date` datetime DEFAULT NULL,
   `req_date` datetime DEFAULT NULL,
-  `comment` varchar(300) DEFAULT NULL,
+  `comment` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`orderid`),
   KEY `fk_orderfood_customerid_idx` (`customerid`),
   KEY `fk_orderfood_chefid_idx` (`chefid`),
@@ -260,7 +260,7 @@ CREATE TABLE `orderfood` (
   CONSTRAINT `fk_orderfood_chefid` FOREIGN KEY (`chefid`) REFERENCES `chef` (`chefid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_orderfood_customerid` FOREIGN KEY (`customerid`) REFERENCES `customer` (`customerid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_orderfood_foodid` FOREIGN KEY (`foodid`) REFERENCES `fooditem` (`foodid`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -533,4 +533,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-05 21:32:13
+-- Dump completed on 2017-12-06 21:17:51

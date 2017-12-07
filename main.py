@@ -93,6 +93,19 @@ def is_logged_in(f):
 # END is_logged_in
 
 
+# Check if user is a customer
+def is_cust(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if session['custid']:
+            return f(*args, **kwargs)
+        else:
+            flash('Order page only available for customers.', 'danger')
+            return redirect(url_for('dashboard'))
+    return wrap
+# END is_chef_only
+
+
 @app.route('/dashboard')
 @app.route('/dashboard/')
 @is_logged_in
@@ -233,7 +246,7 @@ def completeorder(orderid):
     print order
 
     if (session['chefid'] == order.chefid):
-        models.cancel_order(order, "chef")
+        models.complete_order(order)
         flash('Order completed.', 'success')
 
     else:
@@ -266,6 +279,8 @@ def orderinfo(orderid):
 
     if (request.method == 'POST' and form.validate()):
         comment = form.comment.data
+
+        order = models.get_order_by_id(int(orderid), True)
         order.update_comment(comment)
 
         if (session['chefid'] == chef.chefid):
@@ -496,6 +511,7 @@ def orderpage():
 @app.route('/dashboard_order', methods=['GET', 'POST'])
 @app.route('/dashboard_order/', methods=['GET', 'POST'])
 @is_logged_in
+@is_cust
 def dashboard_order():
     return render_template('dashboard_order.html')
 # END dashboard_order

@@ -101,19 +101,19 @@ class OrderPageForm(Form):
 
 
     orderDate = StringField('datepicker')
-    comments = StringField('comments', [validators.Length(min=1, max=50)])
+    comments = StringField('comments', [validators.Length(min=1, max=1000)])
 # END OrderPageForm
 
 
 class ConfirmOrderForm(Form):
     requested_date = DateField('Requested Date', format = '%Y-%m-%d',
                                validators=[DateRange(min = datetime.date.today())])
-    comment = TextAreaField('Comments', [validators.Length(min = 0)])
+    comment = TextAreaField('Comments', [validators.Length(min = 0, max=1000)])
 # END ConfirmOrderForm
 
 
 class UpdateOrderForm(Form):
-    comment = TextAreaField('Comments', [validators.Length(min = 0)])
+    comment = TextAreaField('Comments', [validators.Length(min = 0, max=1000)])
 # END ConfirmOrderForm
 
 

@@ -622,7 +622,7 @@ class OrderFood(db.Model):
     foodid = db.Column(db.Integer, db.ForeignKey('fooditem.foodid'))
     order_date = db.Column(db.DateTime)
     req_date = db.Column(db.DateTime)
-    comment = db.Column(db.String(300))
+    comment = db.Column(db.String(1000))
 
     def __init__(self, customerid, chefid, foodid, order_date, req_date, comment):
         self.customerid = customerid
@@ -672,8 +672,12 @@ def create_order(_custid, _chefid, _foodid, _req_date, _comment):
     return 0
 # END create_order
 
-def get_order_by_id(_orderid):
-    return OrderFood.query.filter_by(orderid = _orderid).first()
+# if lock == true, locks the row in update mode until the next call to db.session.commit()
+def get_order_by_id(_orderid, lock = False):
+    if (not lock):
+        return OrderFood.query.filter_by(orderid = _orderid).first()
+    else:
+        return OrderFood.query.with_lockmode("update").filter_by(orderid = _orderid).first()
 # END get_order_by_id
 
 
@@ -730,6 +734,8 @@ def get_archived_orders_by_chef_id(_chefid):
 # END get_archived_orders_by_chef_id
 
 def cancel_order(_order, _who):
+    _order = OrderFood.query.with_lockmode("update").filter_by(orderid = _order.orderid).first()
+
     status = "cancelled by %s" % _who
 
     end_date = datetime.datetime.now()
@@ -746,6 +752,8 @@ def cancel_order(_order, _who):
 # END cancel_order
 
 def complete_order(_order):
+    _order = OrderFood.query.with_lockmode("update").filter_by(orderid = _order.orderid).first()
+
     status = "completed by chef"
 
     end_date = datetime.datetime.now()
