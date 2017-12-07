@@ -1,3 +1,4 @@
+
 {% extends 'layout.html' %}
 
 {% block body %}
@@ -17,7 +18,7 @@
         </tr>
         {% for order in orders_as_cust %}
             <tr>
-                <td>{{ order.orderid }}</td>
+                <td><a href="{{ url_for('orderinfo', orderid=order.orderid) }}">{{ order.orderid }}</a></td>
                 <td>{{ order.get_food().foodname }}</td>
                 <td>{{ order.get_chef().get_user().fname + " " + order.get_chef().get_user().lname }}</td>
                 <td>{{ order.order_date }}</td>
@@ -41,7 +42,7 @@
         </tr>
         {% for order in orders_as_chef %}
             <tr>
-                <td>{{ order.orderid }}</td>
+                <td><a href="{{ url_for('orderinfo', orderid=order.orderid) }}">{{ order.orderid }}</a></td>
                 <td>{{ order.get_food().foodname }}</td>
                 <td>{{ order.get_customer().get_user().fname + " " + order.get_customer().get_user().lname }}</td>
                 <td>{{ order.order_date }}</td>

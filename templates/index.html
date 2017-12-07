@@ -1,3 +1,4 @@
+
 {% extends 'layout.html' %}
 
 {% block body %}
@@ -27,6 +28,12 @@
             Change account and user settings on the
             <b><a href="{{ url_for('account') }}">Account</a></b>
             page. If this is your first log in, it is recommended to set your user and chef specific details.
+        </p>
+
+        <p>
+            Archived orders that have been complete or cancelled can be found on the 
+            <b><a href="{{ url_for('orderhistory') }}">Order History</a></b>
+            page.
         </p>
 
         <br/>

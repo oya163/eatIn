@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    {% from "includes/_formhelpers.html" import render_field %}
+    <h1>Order Info<br/>
+    <hr/>
+    <small><div class = "container" align="center">{{ food.foodname }}</div></small></h1>
+    <br/>
+
+    <div class = "container" align="left">
+    Description: {{ food.food_des }} <br/>
+    Prep Time: {{ food.cook_time }} minutes <br/>
+    Price: ${{ food.price }} <br/>
+
+    <br/>
+    Order placed: {{ order.order_date }} <br/>
+    Order due: {{ order.req_date }} <br/>
+    <br/>
+    Prepared by: <b>{{ chef.get_user().fname + " " + chef.get_user().lname }}</b><br/>
+    Requested by: <b>{{ cust.get_user().fname + " " + cust.get_user().lname }}</b><br/>
+    <br/>
+
+    Deliver to: <br/>
+
+    <hr/>
+
+    {% if is_hist %}
+        <b>Comments</b><br/>
+        <textarea readonly>{{ order.comment }}</textarea>
+        <hr/>
+
+        Order closed: {{ order.end_date }} <br/>
+        Final status: {{ order.status }} <br/>
+    {% endif %}
+
+    {% if not is_hist %}
+        <form method="POST" action="">
+            Use the input field below to leave comments. Prefix your comment with who you are (CHEF or CUST).
+            <div class="form-group">
+                <div class="input-group" aria-describedby="basic-addon3">
+                    {{ render_field(form.comment, class_="form-control") }}
+                </div>
+            </div>
+            <p><input type="submit" class="btn btn-primary" value="Update comment"> </p>
+        </form>
+
+        <hr/>
+
+        Set order status<br/>
+
+        {% if session.chefid == chef.chefid %}
+            <b><a href="{{ url_for('completeorder', orderid=order.orderid) }}">Complete</a></b><br/>
+            <b><a href="{{ url_for('cancelorder', orderid=order.orderid) }}">Deny</a></b>
+        {% endif %}
+
+        {% if session.custid == cust.customerid %}
+            <b><a href="{{ url_for('cancelorder', orderid=order.orderid) }}">Cancel</a></b>
+        {% endif %}
+    {% endif %}
+
+    <div>
+
+{% endblock %}

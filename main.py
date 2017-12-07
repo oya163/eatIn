@@ -93,6 +93,19 @@ def is_logged_in(f):
 # END is_logged_in
 
 
+# Check if user is a customer
+def is_cust(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if session['custid']:
+            return f(*args, **kwargs)
+        else:
+            flash('Order page only available for customers.', 'danger')
+            return redirect(url_for('dashboard'))
+    return wrap
+# END is_chef_only
+
+
 @app.route('/dashboard')
 @app.route('/dashboard/')
 @is_logged_in
@@ -203,10 +216,120 @@ def confirmorder(foodid, chefid):
 # END confirmorder
 
 
-@app.route('/orderhistory')
-@app.route('/orderhistory/')
+@app.route('/cancelorder/<orderid>', methods=['GET'])
+@app.route('/cancelorder/<orderid>/', methods=['GET'])
+@is_logged_in
+def cancelorder(orderid):
+    order = models.get_order_by_id(int(orderid))
+    print order
+
+    if (session['chefid'] == order.chefid):
+        models.cancel_order(order, "chef")
+        flash('Order cancelled.', 'success')
+
+    elif (session['custid'] == order.customerid):
+        models.cancel_order(order, "customer")
+        flash('Order cancelled.', 'success')
+
+    else:
+        flash('Order not changed', 'danger')
+
+    return redirect(url_for('dashboard'))
+# END cancelorder
+
+
+@app.route('/completeorder/<orderid>', methods=['GET'])
+@app.route('/completeorder/<orderid>/', methods=['GET'])
+@is_logged_in
+def completeorder(orderid):
+    order = models.get_order_by_id(int(orderid))
+    print order
+
+    if (session['chefid'] == order.chefid):
+        models.complete_order(order)
+        flash('Order completed.', 'success')
+
+    else:
+        flash('Order not changed', 'danger')
+
+    return redirect(url_for('dashboard'))
+# END completeorder
+
+
+@app.route('/orderinfo/<orderid>', methods=['GET', 'POST'])
+@app.route('/orderinfo/<orderid>/', methods=['GET', 'POST'])
+@is_logged_in
+def orderinfo(orderid):
+    form = forms.UpdateOrderForm(request.form)
+
+    # try to get order from active orders list
+    order = models.get_order_by_id(int(orderid))
+    is_hist = False
+
+    # if not found, use archived order
+    if (order == None):
+        order = models.get_archived_order_by_id(int(orderid))
+        is_hist = True
+
+    food = models.get_fooditem_by_id(order.foodid)
+    chef = models.get_chef_by_id(order.chefid)
+    cust = models.get_customer_by_id(order.customerid)
+
+    print order, food, chef, cust
+
+    if (request.method == 'POST' and form.validate()):
+        comment = form.comment.data
+
+        order = models.get_order_by_id(int(orderid), True)
+        order.update_comment(comment)
+
+        if (session['chefid'] == chef.chefid):
+            flash('You are the CHEF of this order!', 'success')
+        elif (session['custid'] == cust.customerid):
+            flash('You are the CUSTOMER of this order!', 'success')
+
+        flash('Order comment updated', 'success')
+
+        return render_template('orderinfo.html', form = form,
+                                                 order = order,
+                                                 food = food,
+                                                 chef = chef,
+                                                 cust = cust,
+                                                 is_hist = is_hist)
+
+    form.comment.data = order.comment
+
+    if (session['chefid'] == chef.chefid):
+        flash('You are the CHEF of this order!', 'success')
+    elif (session['custid'] == cust.customerid):
+        flash('You are the CUSTOMER of this order!', 'success')
+
+    return render_template('orderinfo.html', form = form,
+                                             order = order,
+                                             food = food,
+                                             chef = chef,
+                                             cust = cust,
+                                             is_hist = is_hist)
+# END orderinfo
+
+
+@app.route('/orderhistory', methods=['GET'])
+@app.route('/orderhistory/', methods=['GET'])
+@is_logged_in
 def orderhistory():
-    return render_template('orderhistory.html')
+    _orders_as_cust = []
+    _orders_as_chef = []
+
+    if (session['custid']):
+        _orders_as_cust = models.get_archived_orders_by_customer_id(session['custid'])
+
+    if (session['chefid']):
+        _orders_as_chef = models.get_archived_orders_by_chef_id(session['chefid'])
+
+    return render_template('orderhistory.html',
+                           orders_as_cust = _orders_as_cust,
+                           orders_as_chef = _orders_as_chef)
+# END orderhistory
 
 
 @app.route('/about')
@@ -388,6 +511,7 @@ def orderpage():
 @app.route('/dashboard_order', methods=['GET', 'POST'])
 @app.route('/dashboard_order/', methods=['GET', 'POST'])
 @is_logged_in
+@is_cust
 def dashboard_order():
     return render_template('dashboard_order.html')
 # END dashboard_order
@@ -476,4 +600,5 @@ def update_session(user):
 
 
 if __name__ == '__main__':
-    app.run(host = "127.0.0.1", port = 5050, debug = True)
+    app.run(host = "0.0.0.0", port = 5050, debug = True)
+    #app.run(host = "127.0.0.1", port = 5050, debug = True)

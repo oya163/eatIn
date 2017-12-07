@@ -1,8 +1,9 @@
+
 {% extends 'layout.html' %}
 
 {% block body %}
     <h1>Place an Order<br/>
-        <small>Find a Food</small>
+    <small>Find a Food</small>
     </h1>
     <hr/>
 
@@ -19,25 +20,25 @@
         </form>
 
         <table id="foodtable" class="table table-striped">
-            <thead>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Food Name</th>
+            <th>Prep Time</th>
+            <th>Price</th>
+            <th>Rating</th>
+        </tr>
+        </thead>
+        {% for food in foods %}
             <tr>
-                <th>#</th>
-                <th>Food Name</th>
-                <th>Prep Time</th>
-                <th>Price</th>
-                <th>Rating</th>
+                <td>{{ food[0] }}</td>
+                <td><a href="{{ url_for('fooditem', foodid=food[0]) }}">{{ food[3] }}</a></td>
+                <td>{{ food[5] }}</td>
+                <td>{{ food[7] }}</td>
+                <td>{{ food[6] }}</td>
             </tr>
-            </thead>
-            {% for food in foods %}
-                <tr>
-                    <td>{{ food[0] }}</td>
-                    <td><a href="{{ url_for('fooditem', foodid=food[0]) }}">{{ food[3] }}</a></td>
-                    <td>{{ food[5] }}</td>
-                    <td>{{ food[7] }}</td>
-                    <td>{{ food[6] }}</td>
-                </tr>
-            {% endfor %}
-        </table>
+        {% endfor %}
+    </table>
 
     </div>
 {% endblock %}
