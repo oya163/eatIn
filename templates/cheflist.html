@@ -18,16 +18,18 @@
             <p><input type="submit" class="btn btn-primary" value="Search"></p>
         </form>
 
-        <table class="table table-striped">
+        <table id="cheftable" class="table table-striped">
+            <thead>
             <tr>
                 <th>Chef Name</th>
                 <th>Specialty</th>
                 <th>Country</th>
                 <th>Reachout</th>
             </tr>
+            </thead>
             {% for chef in chefs %}
                 <tr>
-                    <td><a href="{{ url_for('chef', chefid=chef.chefid) }}">{{ chef.get_full_name() }}</td>
+                    <td><a href="{{ url_for('chef', chefid=chef.chefid) }}">{{ chef.get_full_name() }}</a></td>
                     <td>{{ chef.get_specialty().cuisine_name }}</td>
                     <td>{{ chef.get_country().countryname }}</td>
                     <td>{{ chef.get_reachouts_str(True) }}</td>
