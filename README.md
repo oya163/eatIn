@@ -4,7 +4,7 @@ testing
 
 1. generate db with ./scripts/build_db_fixed.sql
 2. populate countries with ./scripts/insert_countries.sql
-3. populate users + chefs with ./scripts/insert_chefs.sql
+3. populate users + chefs with ./scripts/insert_users_chefs.sql
 4. populate customers with ./scripts/insert_customers.sql
 5. populate fooditems with ./scripts/insert_meals.sql
 6. populate cuisines with ./scripts/insert_cuisines.sql
